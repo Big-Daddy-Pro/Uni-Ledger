@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger Pro</title>
+    <style>
+        :root {
+            /* Apple Light Theme Variables */
+            --bg-color: #F2F2F7; 
+            --glass-base: rgba(255, 255, 255, 0.65);
+            --glass-hover: rgba(255, 255, 255, 0.85);
+            --glass-edge: rgba(255, 255, 255, 0.6);
+            --glass-inset: rgba(255, 255, 255, 0.4);
+            
+            --primary: #007AFF; 
+            --primary-hover: #005bb5;
+            --danger: #FF3B30; 
+            --success: #34C759; 
+            --warning: #FF9500; 
+            --text-main: #000000;
+            --text-muted: #8E8E93; 
+            --border: rgba(60, 60, 67, 0.1); 
+            --input-bg: rgba(118, 118, 128, 0.12);
+            
+            /* Apple Shadows */
+            --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.03);
+            --shadow-float: 0 12px 30px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 8px 24px rgba(0, 122, 255, 0.25);
+            
+            /* Apple Animations */
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-spring: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1.2);
+
+            /* Vibrant Personal Categories (iOS Inspired) */
+            --cat-food-main: #5AC8FA;    
+            --cat-food-other: #AF52DE;   
+            --cat-travel-main: #FF9500;  
+            --cat-travel-other: #FF2D55; 
+            --cat-other: #34C759;        
+        }
+
+        [data-theme="dark"] {
+            /* Apple Dark Theme Variables */
+            --bg-color: #000000; 
+            --glass-base: rgba(28, 28, 30, 0.65);
+            --glass-hover: rgba(44, 44, 46, 0.85);
+            --glass-edge: rgba(255, 255, 255, 0.1);
+            --glass-inset: rgba(0, 0, 0, 0.3);
+
+            --primary: #0A84FF; 
+            --primary-hover: #0060d1;
+            --danger: #FF453A; 
+            --success: #30D158; 
+            --warning: #FF9F0A; 
+            --text-main: #FFFFFF;
+            --text-muted: #EBEBF5; 
+            --border: rgba(84, 84, 88, 0.35);
+            --input-bg: rgba(118, 118, 128, 0.24);
+            
+            --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.4);
+            --shadow-float: 0 12px 30px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 8px 24px rgba(10, 132, 255, 0.35);
+
+            /* Vibrant Dark Mode Categories */
+            --cat-food-main: #64D2FF;
+            --cat-food-other: #BF5AF2;
+            --cat-travel-main: #FF9F0A;
+            --cat-travel-other: #FF375F;
+            --cat-other: #32D74B;
+        }
+
+        /* --- iOS Scrollbar --- */
+        ::-webkit-scrollbar { width: 14px; height: 14px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(142, 142, 147, 0.5); border-radius: 99px; border: 4px solid var(--bg-color); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(142, 142, 147, 0.8); }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0; padding: 0; line-height: 1.4;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            letter-spacing: -0.015em; 
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+
+        /* --- Ambient Background for Glass Refraction --- */
+        body::before {
+            content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 122, 255, 0.05), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(52, 199, 89, 0.05), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 45, 85, 0.03), transparent 60%);
+            z-index: -1; pointer-events: none;
+        }
+        
+        [data-theme="dark"] body::before {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(10, 132, 255, 0.1), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(48, 209, 88, 0.1), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 69, 58, 0.08), transparent 60%);
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem 1rem; }
+
+        /* --- iOS Sticky Glass Header --- */
+        .header-wrapper {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(242, 242, 247, 0.75);
+            backdrop-filter: saturate(180%) blur(25px); -webkit-backdrop-filter: saturate(180%) blur(25px);
+            border-bottom: 1px solid var(--border);
+            margin: 0 -1rem 2rem -1rem; padding: 1.5rem 1rem 1rem 1rem;
+            transition: background 0.4s ease;
+        }
+        [data-theme="dark"] .header-wrapper { background: rgba(0, 0, 0, 0.75); }
+
+        header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1000px; margin: 0 auto;}
+        
+        .header-titles h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.03em; display: flex; align-items: center; }
+        .pro-badge { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #ffffff; font-size: 0.9rem; padding: 0.2rem 0.6rem; border-radius: 8px; margin-left: 0.5rem; font-weight: 800; letter-spacing: 0.05em; box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+        .header-titles p { color: var(--text-muted); margin: 0.3rem 0 0 0; font-weight: 500; font-size: 0.95rem; }
+        
+        .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        
+        /* Glass Buttons */
+        .btn-icon { 
+            background: var(--glass-inset); border: 1px solid var(--glass-edge); color: var(--text-main); 
+            padding: 0.5rem 1rem; border-radius: 99px; cursor: pointer; font-weight: 600; 
+            font-size: 0.85rem; transition: var(--transition-smooth); display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-soft);
+        }
+        .btn-icon:hover { background: var(--glass-hover); transform: translateY(-2px); box-shadow: var(--shadow-float); }
+        .btn-icon:active, .tab-btn:active, .btn-submit:active { transform: scale(0.95) !important; opacity: 0.8; }
+
+        /* --- iOS Segmented Control (Tabs) --- */
+        .tab-container { position: relative; display: flex; background: var(--input-bg); padding: 4px; border-radius: 12px; margin: 0 auto 2.5rem auto; width: 320px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-soft);}
+        .tab-slider { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); background: var(--surface); border-radius: 8px; box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.04); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 1; }
+        [data-theme="dark"] .tab-slider { background: #636366; }
+        .tab-btn { flex: 1; z-index: 2; background: transparent; border: none; padding: 0.6rem 0; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: color 0.3s; font-size: 0.95rem; }
+        .tab-btn.active { color: var(--text-main); }
+        
+        /* Staggered Animations & Z-INDEX FIX */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        .view-section.active > * { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .view-section.active > *:nth-child(1) { animation-delay: 0.05s; position: relative; z-index: 60; }
+        .view-section.active > *:nth-child(2) { animation-delay: 0.10s; position: relative; z-index: 50; }
+        .view-section.active > *:nth-child(3) { animation-delay: 0.15s; position: relative; z-index: 40; }
+        .view-section.active > *:nth-child(4) { animation-delay: 0.20s; position: relative; z-index: 30; }
+        .view-section.active > *:nth-child(5) { animation-delay: 0.25s; position: relative; z-index: 20; }
+        .view-section.active > *:nth-child(6) { animation-delay: 0.30s; position: relative; z-index: 10; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        /* --- THE GLASS PANE SYSTEM --- */
+        .glass-pane {
+            background: var(--glass-base);
+            backdrop-filter: saturate(180%) blur(25px); -webkit-backdrop-filter: saturate(180%) blur(25px);
+            border: 1px solid var(--glass-edge);
+            border-bottom-color: var(--border); border-right-color: var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .section-box { padding: 1.5rem; border-radius: 24px; margin-bottom: 1.5rem; transition: var(--transition-smooth); }
+        .section-box h2 { margin-top: 0; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.02em;}
+        
+        .split-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.5rem; align-items: start; position: relative; z-index: 50; }
+        .split-layout > *:nth-child(1) { position: relative; z-index: 10; }
+        .split-layout > *:nth-child(2) { position: relative; z-index: 5; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-full { grid-column: 1 / -1; }
+        .form-group { display: flex; flex-direction: column; position: relative; }
+        label { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--text-muted); padding-left: 0.25rem;}
+        
+        /* Glass Inputs */
+        input, select { padding: 0.85rem 1rem; border: 1px solid var(--glass-edge); border-radius: 12px; font-size: 1rem; background: var(--glass-inset); color: var(--text-main); font-family: inherit; outline: none; transition: var(--transition-smooth); width: 100%; box-sizing: border-box; -webkit-appearance: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); background: var(--surface); }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* Custom Glass Dropdown Menus */
+        select { display: none; }
+        .custom-select-container { position: relative; width: 100%; font-family: inherit; }
+        .custom-select-trigger {
+            padding: 0.85rem 1rem; border-radius: 12px; font-size: 1rem; 
+            background: var(--glass-inset); border: 1px solid var(--glass-edge); color: var(--text-main); 
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            transition: var(--transition-smooth); -webkit-tap-highlight-color: transparent; backdrop-filter: blur(10px);
+        }
+        .custom-select-trigger:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); border-color: var(--primary); background: var(--surface);}
+        .custom-select-trigger:active { transform: scale(0.98); opacity: 0.8; }
+        
+        .custom-select-options {
+            position: absolute; left: 0; right: 0;
+            background: var(--glass-surface); backdrop-filter: saturate(180%) blur(30px); -webkit-backdrop-filter: saturate(180%) blur(30px);
+            border: 1px solid var(--glass-edge); border-radius: 16px; box-shadow: var(--shadow-float);
+            z-index: 9999; max-height: 220px; overflow-y: auto;
+            opacity: 0; pointer-events: none; transform: scaleY(0.95); transition: var(--transition-smooth);
+        }
+        .custom-select-options.open { opacity: 1; pointer-events: auto; transform: scaleY(1); }
+        
+        .custom-option {
+            padding: 0.85rem 1.25rem; font-size: 0.95rem; color: var(--text-main); cursor: pointer;
+            transition: background 0.2s; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+        }
+        .custom-option:last-child { border-bottom: none; }
+        .custom-option:hover { background: var(--input-bg); }
+        .custom-option.selected { color: var(--primary); font-weight: 600; }
+        .custom-option.selected::after { content: ''; display: block; width: 6px; height: 12px; border: solid var(--primary); border-width: 0 2px 2px 0; transform: rotate(45deg); margin-right: 5px; }
+
+        button.btn-submit { background-color: var(--primary); color: white; border: none; padding: 0.85rem; border-radius: 14px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: var(--transition-spring); width: 100%; letter-spacing: -0.01em;}
+        button.btn-submit:hover { opacity: 0.9; box-shadow: var(--shadow-glow);}
+        button.btn-success { background-color: var(--success); box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4); }
+
+        .date-input-wrapper { position: relative; cursor: pointer; }
+        .date-input-wrapper::after { content: '🗓'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 1.1rem; opacity: 0.5;}
+        .date-input-wrapper input { cursor: pointer; padding-right: 2.5rem; }
+
+        /* --- Personal: Summaries & Budget --- */
+        .summary-top-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .summary-card { padding: 1.5rem; border-radius: 20px; text-align: center; flex: 1; min-width: 250px; transition: var(--transition-spring); }
+        .summary-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+        .summary-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; }
+        .summary-amount { font-size: 2.2rem; font-weight: 700; margin-top: 0.5rem; letter-spacing: -0.04em;}
+        
+        .budget-tracker-card { padding: 1.5rem; border-radius: 20px; margin-bottom: 1.5rem; transition: var(--transition-smooth);}
+        .budget-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;}
+        .budget-bar-bg { width: 100%; height: 12px; background: var(--glass-inset); border-radius: 99px; margin-top: 1rem; overflow: hidden; border: 1px solid var(--glass-edge); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);}
+        .budget-bar-fill { height: 100%; background: var(--success); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s; width: 0%; border-radius: 99px; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.15);}
+        .budget-meta { display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted); font-weight: 500;}
+
+        .btn-edit-shortcuts { background: transparent; color: var(--primary); border: none; padding: 0.3rem 0.5rem; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: var(--transition-smooth); letter-spacing: -0.01em; -webkit-tap-highlight-color: transparent; }
+        .btn-edit-shortcuts:hover, .btn-edit-shortcuts:active { opacity: 0.5; transform: scale(0.95); }
+
+        /* Glass Quick Adds */
+        .quick-adds { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
+        .quick-btn { background: var(--glass-inset); border: 1px solid var(--glass-edge); color: var(--text-main); font-weight: 500; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 99px; cursor: pointer; transition: var(--transition-spring); display:flex; align-items:center; gap:0.35rem; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
+        .quick-btn:hover { background: var(--glass-hover); transform: scale(1.05); box-shadow: var(--shadow-float);}
+
+        .filter-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;}
+        .filter-row input { flex: 2; border-radius: 12px; min-width: 200px;}
+        .filter-row .custom-select-container { flex: 1; min-width: 150px;} 
+
+        /* --- Analytics: Ambient iOS Donut --- */
+        .analytics-wrapper { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 0.5rem 0; }
+        .donut-container { 
+            position: relative; width: 200px; height: 200px; border-radius: 50%; 
+            background: conic-gradient(var(--border) 100%, transparent 0); display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); flex-shrink: 0; z-index: 1;
+        }
+        .donut-container:hover { transform: scale(1.02); }
+        .donut-container::before { content: ''; position: absolute; inset: -15px; border-radius: 50%; background: inherit; filter: blur(20px); opacity: 0.3; z-index: -1; transition: opacity 0.3s; }
+        .donut-container:hover::before { opacity: 0.5; }
+        .donut-hole { 
+            width: 145px; height: 145px; background: var(--surface); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.04); z-index: 2; padding: 10px; box-sizing: border-box; text-align: center; position: relative;
+        }
+        /* Make inner hole glassy too */
+        .donut-hole { background: var(--glass-base); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        .donut-hole::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--glass-edge); pointer-events: none; }
+        
+        .donut-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.1rem;}
+        .donut-total { font-size: 1.3rem; font-weight: 700; line-height: 1.1; color: var(--text-main); word-break: break-word; width: 100%; letter-spacing: -0.02em;}
+        
+        .insights-box { display: flex; flex-direction: column; gap: 0.75rem; width: 100%;}
+        .insight-card { background: var(--glass-inset); padding: 1rem 1.25rem; border-radius: 14px; border-left: 4px solid var(--primary); transition: var(--transition-smooth); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--glass-edge); border-right: 1px solid var(--glass-edge); border-bottom: 1px solid var(--glass-edge);}
+        .insight-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 0.2rem;}
+        .insight-val { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+
+        /* --- Calendar Top Nav --- */
+        .week-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .week-nav button { background: var(--glass-inset); border: 1px solid var(--glass-edge); padding: 0.5rem 1rem; border-radius: 99px; font-weight: 600; cursor: pointer; transition: var(--transition-spring); color: var(--primary); font-size: 0.9rem; backdrop-filter: blur(10px);}
+        .week-nav button:hover { background: var(--glass-hover); }
+        
+        .days-container { width: 100%; overflow: hidden; padding: 10px 5px; margin: -10px -5px; }
+        .days-wrapper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; width: 100%; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        .day-card { background: var(--glass-inset); border: 1px solid var(--glass-edge); border-radius: 16px; padding: 0.75rem 0.25rem; text-align: center; cursor: pointer; transition: var(--transition-spring); min-width: 60px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); backdrop-filter: blur(10px); }
+        .day-card.active { background: var(--primary); color: white; box-shadow: var(--shadow-glow); border-color: var(--primary);}
+        .day-card.active .day-name, .day-card.active .day-date, .day-card.active .day-total { color: white !important; }
+        .day-card:hover:not(.active) { transform: translateY(-3px); box-shadow: var(--shadow-soft); background: var(--glass-hover);}
+        .day-name { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .day-date { font-size: 1.2rem; font-weight: 700; margin: 0.1rem 0; color: var(--text-main); }
+        .day-total { font-size: 0.75rem; font-weight: 600; color: var(--danger);}
+        .day-total.zero { color: var(--text-muted); }
+
+        /* --- Modern Stacked "Glass Pill" Graph --- */
+        .chart-container { height: 220px; display: flex; align-items: flex-end; justify-content: space-around; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem;}
+        .chart-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
+        
+        .bar-track { width: 100%; max-width: 36px; height: 100%; background: var(--glass-inset); border: 1px solid var(--glass-edge); border-radius: 99px; display: flex; flex-direction: column; justify-content: flex-end; padding: 3px; box-sizing: border-box; transition: var(--transition-spring); box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); backdrop-filter: blur(5px);}
+        .chart-col:hover .bar-track { transform: scaleY(1.02); transform-origin: bottom; background: var(--glass-hover);}
+
+        .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; border-radius: 99px; overflow: hidden; position: relative; }
+        .bar-segment { width: 100%; position: relative; transition: opacity 0.2s; }
+        .bar-segment:hover { opacity: 0.85; }
+        .bar-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 600; }
+        
+        .bar-tooltip { position: absolute; top: -30px; background: var(--glass-surface); backdrop-filter: saturate(180%) blur(25px); -webkit-backdrop-filter: blur(25px); color: var(--text-main); font-size: 0.8rem; font-weight: 600; padding: 0.4rem 0.75rem; border-radius: 8px; opacity: 0; pointer-events: none; white-space: nowrap; z-index: 10; transition: var(--transition-spring); transform: translateY(10px) scale(0.9); box-shadow: var(--shadow-float); border: 1px solid var(--glass-edge); }
+        .chart-col:hover .bar-tooltip { opacity: 1; top: -40px; transform: translateY(0) scale(1); }
+
+        /* Colors & Legends */
+        .seg-food-main { background-color: var(--cat-food-main); }
+        .seg-food-other { background-color: var(--cat-food-other); }
+        .seg-travel-main { background-color: var(--cat-travel-main); }
+        .seg-travel-other { background-color: var(--cat-travel-other); }
+        .seg-other { background-color: var(--cat-other); }
+
+        .chart-legend { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; cursor: default; }
+        .legend-color { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* --- Roommates UI --- */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .card { padding: 1.5rem; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-spring); position: relative;}
+        .card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-float); padding-bottom: 2.5rem; }
+        .card::after { content: 'Click to view details'; position: absolute; bottom: 12px; font-size: 0.75rem; color: var(--primary); opacity: 0; transition: var(--transition-smooth); transform: translateY(10px); font-weight: 700;}
+        .card:hover::after { opacity: 1; transform: translateY(0); }
+        .roommate-name { font-size: 1.3rem; font-weight: 700; background: var(--glass-inset); border: 1px solid var(--glass-edge); border-radius: 10px; text-align: center; width: 90%; padding: 0.4rem; outline: none; color: var(--text-main); transition: var(--transition-smooth); letter-spacing: -0.02em;}
+        .roommate-name:focus { box-shadow: 0 0 0 2px var(--primary); background: var(--surface);}
+        .balance-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+        .balance-amount { font-size: 2.2rem; font-weight: 700; margin-top: 0.2rem; line-height: 1; letter-spacing:-0.03em;}
+        .owes-me { color: var(--success); } .paid-up { color: var(--danger); } .settled { color: var(--text-muted); }
+
+        /* --- Interactive Lists (Glass) --- */
+        .history-list { list-style: none; padding: 0; margin: 0; max-height: 450px; overflow-y: auto; padding-right: 0.5rem; }
+        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0.75rem; margin-bottom: 0.5rem; background: var(--glass-inset); border-radius: 12px; border: 1px solid var(--glass-edge); border-left: 4px solid transparent; transition: var(--transition-spring); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
+        .history-item:hover { transform: translateX(6px); border-left-color: var(--primary); box-shadow: var(--shadow-soft); background: var(--glass-hover); }
+        
+        .history-details { display: flex; flex-direction: column; gap:0.2rem; }
+        .history-title { font-weight: 600; font-size: 1rem; color: var(--text-main);}
+        .history-meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 400; display:flex; align-items:center; gap:0.5rem; flex-wrap: wrap;}
+        .history-right { display: flex; align-items: center; gap: 0.5rem; }
+        .history-amount { font-size: 1.1rem; font-weight: 600; margin-right: 0.25rem;}
+        .amount-pos { color: var(--success); } .amount-neg { color: var(--text-main); }
+        
+        .badge { padding: 0.2rem 0.5rem; border-radius: 5px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .badge.debt { background: rgba(52, 199, 89, 0.15); color: var(--success); }
+        .badge.credit { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+        
+        .badge.cat-food-main { background: rgba(90, 200, 250, 0.15); color: var(--cat-food-main); }
+        .badge.cat-food-other { background: rgba(175, 82, 222, 0.15); color: var(--cat-food-other); }
+        .badge.cat-travel-main { background: rgba(255, 149, 0, 0.15); color: var(--cat-travel-main); }
+        .badge.cat-travel-other { background: rgba(255, 45, 85, 0.15); color: var(--cat-travel-other); }
+        .badge.cat-other { background: rgba(52, 199, 89, 0.15); color: var(--cat-other); }
+
+        .btn-action { background: var(--glass-inset); border: 1px solid var(--glass-edge); color: var(--primary); cursor: pointer; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: var(--transition-spring); }
+        .btn-action:hover { background: var(--glass-hover); transform: scale(1.1); box-shadow: var(--shadow-soft);}
+        .btn-action.delete { color: var(--danger); }
+        .btn-action.delete:hover { background: rgba(255, 59, 48, 0.15); }
+
+        /* --- iOS Glassmorphism Modals --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal { background: var(--glass-surface); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 24px; display: flex; flex-direction: column; transform: translateY(40px) scale(0.97); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-edge);}
+        .modal-overlay.active .modal { transform: translateY(0) scale(1); }
+        
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--text-main); letter-spacing: -0.02em;}
+        .btn-close { background: var(--glass-inset); border: 1px solid var(--glass-edge); width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: var(--transition-spring); }
+        .btn-close:hover { background: var(--glass-hover); color: var(--text-main); transform: rotate(90deg) scale(1.1);}
+        
+        .modal-body { padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; }
+        
+        .modal-status-card { background: var(--glass-inset); border: 1px solid var(--glass-edge); padding: 1.25rem; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;}
+        .modal-status-text { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
+        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em;}
+
+        .report-section { background: var(--glass-inset); border: 1px solid var(--glass-edge); padding: 1rem; border-radius: 16px; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+
+        /* --- iOS Custom Date Picker Modal UI --- */
+        .cal-modal { background: var(--glass-surface); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: blur(35px); width: 100%; max-width: 320px; border-radius: 24px; padding: 1.25rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--glass-edge); transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .cal-modal { transform: translateY(0) scale(1); }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .cal-month-year { font-weight: 600; font-size: 1.1rem; color: var(--text-main); }
+        .cal-nav-btn { background: var(--glass-inset); border: 1px solid var(--glass-edge); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-spring); color: var(--primary); font-weight: 600; font-size: 1.2rem;}
+        .cal-nav-btn:hover { background: var(--glass-hover); transform: scale(1.1); box-shadow: var(--shadow-soft);}
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.3rem; }
+        .cal-day-label { text-align: center; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 400; font-size: 1rem; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .cal-day:hover { background: var(--glass-inset); }
+        .cal-day.active { background: var(--primary); color: white; font-weight: 600; box-shadow: var(--shadow-glow);}
+        .cal-day.today:not(.active) { color: var(--primary); font-weight: 700; background: rgba(0, 122, 255, 0.1); }
+        .cal-day.empty { visibility: hidden; }
+
+        @media (max-width: 768px) {
+            .header-wrapper { padding: 1rem 0.5rem; margin-bottom: 1rem;}
+            header { flex-direction: column; text-align: center; gap: 1rem; }
+            .controls { justify-content: center; }
+            .history-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .history-right { width: 100%; justify-content: space-between; }
+            .modal-status-card { flex-direction: column; text-align: center; }
+            .summary-top-row { flex-direction: column; }
+            .split-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-wrapper">
+    <header>
+        <div class="header-titles">
+            <h1>Ledger <span class="pro-badge">PRO</span></h1>
+        </div>
+        <div class="controls">
+            <button class="btn-icon" onclick="exportCSV()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export CSV
+            </button>
+            <button class="btn-icon" onclick="exportBackupJSON()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Backup
+            </button>
+            <label class="btn-icon" style="margin:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Restore
+                <input type="file" id="import-file" accept=".json" style="display:none;">
+            </label>
+            <button class="btn-icon" id="theme-toggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+    </header>
+</div>
+
+<div class="container">
+    
+    <!-- iOS Segmented Control -->
+    <div class="tab-container">
+        <div class="tab-slider" id="tab-slider"></div>
+        <button class="tab-btn active" id="tab-personal-btn" onclick="switchTab('personal')">Personal</button>
+        <button class="tab-btn" id="tab-roommates-btn" onclick="switchTab('roommates')">Roommates</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW: MY EXPENSES                          -->
+    <!-- ========================================== -->
+    <div id="view-personal" class="view-section active">
+        
+        <div class="summary-top-row">
+            <div class="summary-card glass-pane">
+                <div class="summary-label" id="today-label">Today</div>
+                <div class="summary-amount" style="color: var(--text-main)" id="d-total">Rs. 0.00</div>
+            </div>
+            <div class="summary-card glass-pane">
+                <div class="summary-label">This Week</div>
+                <div class="summary-amount amount-neg" id="w-total">Rs. 0.00</div>
+            </div>
+        </div>
+
+        <div class="budget-tracker-card glass-pane">
+            <div class="budget-header">
+                <div>
+                    <div class="summary-label">Weekly Budget</div>
+                    <div class="summary-amount" style="font-size:1.8rem; margin-top:0.25rem;" id="m-total">Rs. 0.00 <span style="font-size:1rem; color:var(--text-muted); font-weight:500;">/ <span id="budget-limit-text">Rs. 5,000</span></span></div>
+                </div>
+                <button class="btn-submit" onclick="openBudgetModal()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem; border-radius: 99px; background: var(--input-bg); color: var(--text-main); box-shadow: none;">Set Limit</button>
+            </div>
+            <div class="budget-bar-bg">
+                <div class="budget-bar-fill" id="budget-fill"></div>
+            </div>
+            <div class="budget-meta">
+                <span id="budget-percent">0% Used</span>
+                <span id="budget-remaining">Remaining: Rs. 5,000</span>
+            </div>
+        </div>
+
+        <div class="section-box glass-pane">
+            <div class="week-nav">
+                <button onclick="changeWeek(-1)">‹ Prev</button>
+                <h2 id="week-range-label" style="margin:0; font-size:1.1rem; font-weight:600;"></h2>
+                <button onclick="changeWeek(1)">Next ›</button>
+            </div>
+            <div class="days-container">
+                <div class="days-wrapper" id="days-wrapper"></div>
+            </div>
+        </div>
+
+        <div class="split-layout">
+            <div class="section-box glass-pane" style="margin-bottom:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+                    <label style="margin:0; font-size:0.95rem; color:var(--text-main); font-weight: 600;">⚡ Quick Log</label>
+                    <button class="btn-edit-shortcuts" onclick="openQuickAddModal()">Edit</button>
+                </div>
+                
+                <div class="quick-adds" id="quick-add-container"></div>
+
+                <h2 id="form-title" style="margin-top: 1rem; padding-top: 1rem; font-size: 1.2rem;">Custom Expense</h2>
+
+                <form id="form-personal">
+                    <input type="hidden" id="p-edit-id" value="">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div class="date-input-wrapper" onclick="openCalendar('p-date')">
+                                <input type="text" id="p-date-display" placeholder="Select" readonly required>
+                                <input type="hidden" id="p-date">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (Rs.)</label>
+                            <input type="number" id="p-amount" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group form-full">
+                            <label>Category</label>
+                            <select id="p-category" style="display:none;">
+                                <option value="food-main">Food (Main Meals)</option>
+                                <option value="food-other">Food (Snacks/Drinks)</option>
+                                <option value="travel-main">Travel (Home to Uni/Back)</option>
+                                <option value="travel-other">Travel (Other/Local)</option>
+                                <option value="other">Other / Misc</option>
+                            </select>
+                        </div>
+                        <div class="form-group form-full">
+                            <label>Description</label>
+                            <input type="text" id="p-note" placeholder="Optional note">
+                        </div>
+                        <div class="form-group form-full" style="flex-direction:row; gap:1rem;">
+                            <button type="submit" class="btn-submit" id="p-submit-btn">Save</button>
+                            <button type="button" class="btn-submit" style="background:var(--input-bg); color:var(--text-main); display:none; box-shadow:none;" id="p-cancel-btn" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section-box glass-pane" style="margin-bottom:0; display:flex; flex-direction:column;">
+                <h2 style="margin-bottom:1.5rem; font-size: 1.2rem;">Daily Analytics</h2>
+                <div class="analytics-wrapper">
+                    <div class="donut-container" id="donut-chart">
+                        <div class="donut-hole">
+                            <span class="donut-label">Today</span>
+                            <span class="donut-total" id="donut-total-val">0</span>
+                        </div>
+                    </div>
+                    <div class="insights-box" id="insights-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box glass-pane" style="margin-top: 1.5rem;">
+            <h2 style="font-size: 1.2rem;">Activity Graph</h2>
+            <div class="chart-container" id="w-chart"></div>
+            <div class="chart-legend" id="w-legend"></div>
+        </div>
+
+        <div class="section-box glass-pane">
+            <h2 style="font-size: 1.2rem;">
+                <span>History</span>
+                <button class="btn-submit" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem; border-radius: 99px; background: var(--input-bg); color: var(--primary); box-shadow: none;" onclick="openPersonalReportModal()">Print</button>
+            </h2>
+            <div class="filter-row">
+                <input type="text" id="search-desc" placeholder="Search..." oninput="renderPersonalHistory()">
+                <div class="form-group" style="margin:0;">
+                    <select id="filter-cat" onchange="renderPersonalHistory()" style="display:none;">
+                        <option value="all">All Categories</option>
+                        <option value="food-main">Food (Main Meals)</option>
+                        <option value="food-other">Food (Snacks/Drinks)</option>
+                        <option value="travel-main">Travel (Home to Uni/Back)</option>
+                        <option value="travel-other">Travel (Other/Local)</option>
+                        <option value="other">Other / Misc</option>
+                    </select>
+                </div>
+            </div>
+            <ul class="history-list" id="p-list"></ul>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- VIEW: ROOMMATES                            -->
+    <!-- ========================================== -->
+    <div id="view-roommates" class="view-section">
+        
+        <div class="summary-top-row">
+            <div class="summary-card glass-pane">
+                <div class="summary-label">Total Owed To You</div>
+                <div class="summary-amount owes-me" id="total-owed">Rs. 0.00</div>
+            </div>
+            <div class="summary-card glass-pane">
+                <div class="summary-label">Total You Owe</div>
+                <div class="summary-amount paid-up" id="total-owe">Rs. 0.00</div>
+            </div>
+        </div>
+
+        <div class="dashboard" id="dashboard"></div>
+
+        <div class="section-box glass-pane">
+            <h2 style="font-size: 1.2rem;">Add Transaction</h2>
+            <form id="transaction-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Select Roommate</label>
+                        <select id="roommate-select" required style="display:none;"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Transaction Type</label>
+                        <select id="transaction-type" style="display:none;">
+                            <option value="add">They owe me (+)</option>
+                            <option value="remove">I owe them / They paid me (-)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (Rs.)</label>
+                        <input type="number" id="r-amount" step="0.01" min="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Note (Optional)</label>
+                        <input type="text" id="r-note" placeholder="Description">
+                    </div>
+                    <div class="form-group form-full">
+                        <button type="submit" class="btn-submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="section-box glass-pane">
+            <h2 style="font-size: 1.2rem;">Global Ledger</h2>
+            <ul class="history-list" id="history-list"></ul>
+        </div>
+    </div>
+
+</div>
+
+<!-- UNIFIED DYNAMIC MODAL (For History, Reports & Settling) -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modal-title">Details</h2>
+            <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            
+            <div class="modal-status-card" id="modal-status-area">
+                <div>
+                    <div class="modal-status-text" id="modal-status-label">Total:</div>
+                    <div class="modal-status-amount" id="modal-status-amount">Rs. 0.00</div>
+                </div>
+                <button id="btn-settle" class="btn-submit btn-success" style="margin:0; padding: 0.6rem 1rem; width:auto; display:none;" onclick="settleUpActiveRoommate()">Settle Up</button>
+            </div>
+
+            <div id="modal-report-section" class="report-section" style="display:none;">
+                <div class="form-group" style="flex: 1; min-width: 120px; margin:0;">
+                    <label style="font-size:0.8rem;">Start</label>
+                    <div class="date-input-wrapper" onclick="openCalendar('report-start')">
+                        <input type="text" id="report-start-display" placeholder="Date" readonly required style="padding:0.5rem 2rem 0.5rem 0.5rem; font-size:0.9rem;">
+                        <input type="hidden" id="report-start">
+                    </div>
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 120px; margin:0;">
+                    <label style="font-size:0.8rem;">End</label>
+                    <div class="date-input-wrapper" onclick="openCalendar('report-end')">
+                        <input type="text" id="report-end-display" placeholder="Date" readonly required style="padding:0.5rem 2rem 0.5rem 0.5rem; font-size:0.9rem;">
+                        <input type="hidden" id="report-end">
+                    </div>
+                </div>
+                <button class="btn-submit" style="margin:0; padding: 0.6rem 1rem; width:auto;" onclick="generatePrintReport()">Print</button>
+            </div>
+
+            <ul class="history-list" id="modal-history-list" style="max-height: none; overflow-y: visible;"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- BUDGET MODAL -->
+<div class="modal-overlay" id="budget-modal-overlay">
+    <div class="modal" style="max-width: 320px;">
+        <div class="modal-header">
+            <h2>Weekly Budget</h2>
+            <button class="btn-close" onclick="closeBudgetModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom:0;">
+                <label>Limit (Rs.)</label>
+                <input type="number" id="budget-input-val" step="100" min="0" placeholder="5000">
+            </div>
+            <button class="btn-submit" onclick="saveBudgetModal()" style="margin-top:1rem;">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- QUICK ADD EDITOR MODAL -->
+<div class="modal-overlay" id="quick-add-modal-overlay">
+    <div class="modal" style="max-width: 450px;">
+        <div class="modal-header">
+            <h2 id="qa-modal-title">Edit Shortcuts</h2>
+            <button class="btn-close" onclick="closeQuickAddModal()">×</button>
+        </div>
+        <div class="modal-body" style="padding: 1.5rem; display: flex; flex-direction: column;">
+            
+            <div class="form-grid glass-pane" style="padding: 1rem; border-radius: 16px; gap: 0.75rem;">
+                <input type="hidden" id="qa-edit-id" value="">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Emoji</label>
+                    <input type="text" id="qa-emoji" maxlength="2" placeholder="🍔" style="text-align:center;">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Name</label>
+                    <input type="text" id="qa-label" placeholder="Burger">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Amount</label>
+                    <input type="number" id="qa-amount" step="0.01" min="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Category</label>
+                    <select id="qa-category" style="display:none;">
+                        <option value="food-main">Food (Main)</option>
+                        <option value="food-other">Food (Snacks)</option>
+                        <option value="travel-main">Travel (Main)</option>
+                        <option value="travel-other">Travel (Local)</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group form-full" style="margin-bottom:0; flex-direction: row; gap: 0.5rem; margin-top:0.5rem;">
+                    <button class="btn-submit" id="btn-qa-submit" onclick="saveNewQuickAdd()">Save</button>
+                    <button class="btn-submit" id="btn-qa-cancel" style="background:var(--bg-color); color:var(--text-main); display:none; box-shadow:none;" onclick="cancelQAEdit()">Cancel</button>
+                </div>
+            </div>
+
+            <h3 style="margin: 1rem 0 0 0; font-size:1rem; color:var(--text-main);">Current</h3>
+            <ul class="history-list" id="quick-add-list" style="max-height: none; overflow-y: visible;"></ul>
+
+        </div>
+    </div>
+</div>
+
+<!-- CUSTOM DATE PICKER MODAL -->
+<div class="modal-overlay" id="calendar-modal-overlay" style="z-index: 1100;">
+    <div class="cal-modal">
+        <div class="cal-header">
+            <button class="cal-nav-btn" onclick="changeCalMonth(-1)">‹</button>
+            <div class="cal-month-year" id="cal-month-year">August 2026</div>
+            <button class="cal-nav-btn" onclick="changeCalMonth(1)">›</button>
+        </div>
+        <div class="cal-grid">
+            <div class="cal-day-label">S</div><div class="cal-day-label">M</div>
+            <div class="cal-day-label">T</div><div class="cal-day-label">W</div>
+            <div class="cal-day-label">T</div><div class="cal-day-label">F</div>
+            <div class="cal-day-label">S</div>
+        </div>
+        <div class="cal-grid" id="cal-days-grid"></div>
+    </div>
+</div>
+
+<script>
+    // --- Custom Select Logic ---
+    function setupCustomSelect(selectId) {
+        const select = document.getElementById(selectId);
+        if(!select) return;
+        
+        let container = select.parentElement;
+        if (!container.classList.contains('custom-select-container')) {
+            container = document.createElement('div');
+            container.className = 'custom-select-container';
+            select.parentNode.insertBefore(container, select);
+            container.appendChild(select);
+
+            const trigger = document.createElement('div');
+            trigger.className = 'custom-select-trigger';
+            trigger.innerHTML = `<span></span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+            container.appendChild(trigger);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'custom-select-options';
+            container.appendChild(optionsDiv);
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.custom-select-options').forEach(opt => {
+                    if(opt !== optionsDiv) opt.classList.remove('open');
+                });
+                
+                const rect = trigger.getBoundingClientRect();
+                if (window.innerHeight - rect.bottom < 220 && rect.top > 220) {
+                    optionsDiv.style.top = 'auto';
+                    optionsDiv.style.bottom = 'calc(100% + 5px)';
+                    optionsDiv.style.transformOrigin = 'bottom center';
+                } else {
+                    optionsDiv.style.top = 'calc(100% + 5px)';
+                    optionsDiv.style.bottom = 'auto';
+                    optionsDiv.style.transformOrigin = 'top center';
+                }
+
+                optionsDiv.classList.toggle('open');
+            });
+        }
+
+        const triggerSpan = container.querySelector('.custom-select-trigger span');
+        const optionsDiv = container.querySelector('.custom-select-options');
+        
+        if(select.options.length > 0) {
+            triggerSpan.textContent = select.options[select.selectedIndex]?.text || select.options[0].text;
+        } else {
+            triggerSpan.textContent = 'Select...';
+        }
+
+        optionsDiv.innerHTML = '';
+        Array.from(select.options).forEach(option => {
+            const optDiv = document.createElement('div');
+            optDiv.className = `custom-option ${option.selected ? 'selected' : ''}`;
+            optDiv.textContent = option.text;
+            optDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                select.value = option.value;
+                triggerSpan.textContent = option.text;
+                optionsDiv.classList.remove('open');
+                select.dispatchEvent(new Event('change'));
+                syncAllSelects(); 
+            });
+            optionsDiv.appendChild(optDiv);
+        });
+    }
+
+    function syncAllSelects() {
+        ['p-category', 'qa-category', 'filter-cat', 'roommate-select', 'transaction-type'].forEach(id => setupCustomSelect(id));
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.custom-select-options').forEach(opt => opt.classList.remove('open'));
+    });
+
+
+    // --- Global Controls ---
+    const themeToggle = document.getElementById('theme-toggle');
+    if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+    themeToggle.addEventListener('click', () => {
+        if (document.body.getAttribute('data-theme') === 'dark') {
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+
+    let currentTab = 'personal';
+    function switchTab(tabId) {
+        currentTab = tabId;
+        const slider = document.getElementById('tab-slider');
+        if (tabId === 'roommates') {
+            slider.style.transform = 'translateX(100%)';
+        } else {
+            slider.style.transform = 'translateX(0)';
+        }
+
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('view-' + tabId).classList.add('active');
+        document.getElementById('tab-' + tabId + '-btn').classList.add('active');
+    }
+
+    const formatMoney = (amt) => 'Rs. ' + Math.abs(amt).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const toISOLocal = (d) => { const z = n => ('0'+n).slice(-2); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`; };
+    const formatDateObj = (dStr) => new Date(dStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const formatDateShort = (dStr) => new Date(dStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    // --- Custom Date Picker Logic ---
+    let currentCalDate = new Date();
+    let activeDateInputId = null;
+
+    function setDateInput(id, isoVal) {
+        const hidden = document.getElementById(id);
+        const display = document.getElementById(id + '-display');
+        if(hidden) hidden.value = isoVal;
+        if(display) display.value = formatDateShort(isoVal);
+    }
+
+    function openCalendar(inputId) {
+        activeDateInputId = inputId;
+        const existingVal = document.getElementById(inputId).value;
+        if(existingVal) currentCalDate = new Date(existingVal);
+        else currentCalDate = new Date();
+        
+        renderCalendarModal();
+        document.getElementById('calendar-modal-overlay').classList.add('active');
+    }
+
+    function closeCalendar() { document.getElementById('calendar-modal-overlay').classList.remove('active'); }
+
+    function renderCalendarModal() {
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        document.getElementById('cal-month-year').textContent = new Intl.DateTimeFormat('en-US', {month: 'long', year: 'numeric'}).format(currentCalDate);
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const grid = document.getElementById('cal-days-grid');
+        grid.innerHTML = '';
+
+        for(let i=0; i<firstDay; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+
+        const todayStr = toISOLocal(new Date());
+        const selectedStr = document.getElementById(activeDateInputId).value;
+
+        for(let d=1; d<=daysInMonth; d++) {
+            const dateStr = toISOLocal(new Date(year, month, d));
+            let classes = "cal-day";
+            if(dateStr === todayStr && dateStr !== selectedStr) classes += " today";
+            if(dateStr === selectedStr) classes += " active";
+            grid.innerHTML += `<div class="${classes}" onclick="selectDate(${year}, ${month}, ${d})">${d}</div>`;
+        }
+    }
+
+    function changeCalMonth(offset) { currentCalDate.setMonth(currentCalDate.getMonth() + offset); renderCalendarModal(); }
+
+    function selectDate(year, month, day) {
+        const iso = toISOLocal(new Date(year, month, day));
+        setDateInput(activeDateInputId, iso);
+        closeCalendar();
+    }
+
+    // --- Data Storage ---
+    const STORE_P = 'ledger_p_ios_v15';
+    const STORE_R = 'ledger_r_ios_v15';
+
+    let stateP = JSON.parse(localStorage.getItem(STORE_P));
+    if (!stateP) {
+        stateP = { 
+            expenses: [], budget: 5000,
+            quickAdds: [
+                { id: '1', emoji: '🍛', label: 'Lunch', amount: 400, category: 'food-main' },
+                { id: '2', emoji: '☕', label: 'Tea', amount: 150, category: 'food-other' },
+                { id: '3', emoji: '🚌', label: 'Bus', amount: 50, category: 'travel-main' },
+                { id: '4', emoji: '🛺', label: 'Tuk', amount: 250, category: 'travel-other' }
+            ]
+        };
+    } else if (!stateP.quickAdds) {
+        stateP.quickAdds = [
+            { id: '1', emoji: '🍛', label: 'Lunch', amount: 400, category: 'food-main' },
+            { id: '2', emoji: '☕', label: 'Tea', amount: 150, category: 'food-other' }
+        ];
+    }
+
+    let stateR = JSON.parse(localStorage.getItem(STORE_R)) || { roommates: [{id:1, name:'Roommate 1'}, {id:2, name:'Roommate 2'}, {id:3, name:'Roommate 3'}], transactions: [] };
+    let activeModal = { type: null, id: null };
+
+    const saveP = () => { localStorage.setItem(STORE_P, JSON.stringify(stateP)); renderPersonal(); if(activeModal.type==='day') openDayModal(activeModal.id); };
+    const saveR = () => { localStorage.setItem(STORE_R, JSON.stringify(stateR)); renderRoommates(); if(activeModal.type==='roommate') openRoommateModal(activeModal.id); };
+
+    // --- Import / Export ---
+    function exportBackupJSON() {
+        const data = currentTab === 'personal' ? stateP : stateR;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type: "application/json"}));
+        a.download = `ledger_backup_${currentTab}_${toISOLocal(new Date())}.json`;
+        a.click();
+    }
+
+    document.getElementById('import-file').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = evt => {
+            try {
+                const parsed = JSON.parse(evt.target.result);
+                if (currentTab === 'personal' && parsed.expenses) { stateP = parsed; saveP(); alert('Personal Data Restored!'); }
+                else if (currentTab === 'roommates' && parsed.transactions) { stateR = parsed; saveR(); alert('Roommate Data Restored!'); }
+                else throw new Error();
+            } catch { alert("Error: Invalid backup file."); }
+            e.target.value = '';
+        };
+        reader.readAsText(file);
+    });
+
+    // ==========================================
+    // PERSONAL EXPENSES 
+    // ==========================================
+    const cats = { 'food-main': 'Food (Main)', 'food-other': 'Food (Snacks)', 'travel-main': 'Travel (Main)', 'travel-other': 'Travel (Local)', 'other': 'Other' };
+    const catKeys = Object.keys(cats);
+    
+    let currentDate = new Date(); currentDate.setHours(0,0,0,0);
+    let currentWeekStart = new Date(currentDate);
+    currentWeekStart.setDate(currentWeekStart.getDate() - (currentWeekStart.getDay()||7) + 1);
+
+    setDateInput('p-date', toISOLocal(new Date()));
+
+    function changeWeek(offset) {
+        const wrapper = document.getElementById('days-wrapper');
+        const outClass = offset > 0 ? 'slide-out-left' : 'slide-out-right';
+        const inClass = offset > 0 ? 'slide-in-right' : 'slide-in-left';
+        
+        wrapper.classList.add(outClass);
+
+        setTimeout(() => {
+            currentWeekStart.setDate(currentWeekStart.getDate() + (offset * 7));
+            renderPersonal();
+            wrapper.classList.remove(outClass);
+            wrapper.classList.add(inClass);
+            setTimeout(() => { wrapper.classList.remove(inClass); }, 300);
+        }, 300);
+    }
+
+    // --- Budget Logic ---
+    function openBudgetModal() { document.getElementById('budget-input-val').value = stateP.budget; document.getElementById('budget-modal-overlay').classList.add('active'); }
+    function closeBudgetModal() { document.getElementById('budget-modal-overlay').classList.remove('active'); }
+    function saveBudgetModal() {
+        const amt = parseFloat(document.getElementById('budget-input-val').value);
+        if(!isNaN(amt) && amt >= 0) { stateP.budget = amt; saveP(); closeBudgetModal(); }
+    }
+
+    // --- Quick Adds Logic ---
+    function renderQuickAdds() {
+        const container = document.getElementById('quick-add-container');
+        container.innerHTML = '';
+        stateP.quickAdds.forEach(qa => {
+            container.innerHTML += `<button type="button" class="quick-btn" onclick="triggerQuickAdd(${qa.amount}, '${qa.category}', '${qa.label}')"><span style="font-size:1.1rem">${qa.emoji}</span> ${qa.label} (${qa.amount})</button>`;
+        });
+        if(stateP.quickAdds.length === 0) container.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem; padding:0.5rem 0;">No shortcuts added yet. Click Edit.</span>';
+    }
+
+    function openQuickAddModal() {
+        renderQuickAddEditorList();
+        cancelQAEdit();
+        document.getElementById('quick-add-modal-overlay').classList.add('active');
+    }
+
+    function closeQuickAddModal() { document.getElementById('quick-add-modal-overlay').classList.remove('active'); }
+
+    function renderQuickAddEditorList() {
+        const list = document.getElementById('quick-add-list');
+        list.innerHTML = '';
+        stateP.quickAdds.forEach(qa => {
+            list.innerHTML += `
+                <li class="history-item" style="padding:0.75rem 1rem;">
+                    <div class="history-details" style="flex-direction:row; align-items:center; gap:0.5rem;">
+                        <span style="font-size:1.2rem;">${qa.emoji}</span>
+                        <span class="history-title" style="font-size:0.95rem;">${qa.label}</span>
+                        <span class="badge cat-${qa.category}" style="margin-left:0.5rem; font-size:0.65rem;">${cats[qa.category]}</span>
+                    </div>
+                    <div class="history-right">
+                        <span class="history-amount amount-neg" style="font-size:1rem;">${qa.amount}</span>
+                        <button class="btn-action" style="width:28px; height:28px;" onclick="editQuickAdd('${qa.id}')">✏️</button>
+                        <button class="btn-action delete" style="width:28px; height:28px;" onclick="deleteQuickAdd('${qa.id}')">×</button>
+                    </div>
+                </li>
+            `;
+        });
+    }
+
+    function editQuickAdd(id) {
+        const qa = stateP.quickAdds.find(q => q.id === id);
+        if(!qa) return;
+        document.getElementById('qa-edit-id').value = qa.id;
+        document.getElementById('qa-emoji').value = qa.emoji;
+        document.getElementById('qa-label').value = qa.label;
+        document.getElementById('qa-amount').value = qa.amount;
+        
+        const catSelect = document.getElementById('qa-category');
+        catSelect.value = qa.category;
+        
+        document.getElementById('btn-qa-submit').textContent = "Save";
+        document.getElementById('btn-qa-cancel').style.display = "block";
+        syncAllSelects();
+    }
+
+    function cancelQAEdit() {
+        document.getElementById('qa-edit-id').value = '';
+        document.getElementById('qa-emoji').value = '';
+        document.getElementById('qa-label').value = '';
+        document.getElementById('qa-amount').value = '';
+        
+        document.getElementById('qa-category').selectedIndex = 0;
+        
+        document.getElementById('btn-qa-submit').textContent = "Save";
+        document.getElementById('btn-qa-cancel').style.display = "none";
+        syncAllSelects();
+    }
+
+    function saveNewQuickAdd() {
+        const id = document.getElementById('qa-edit-id').value;
+        const emoji = document.getElementById('qa-emoji').value.trim() || '⚡';
+        const label = document.getElementById('qa-label').value.trim() || 'Quick Add';
+        const amount = parseFloat(document.getElementById('qa-amount').value);
+        const category = document.getElementById('qa-category').value;
+
+        if (isNaN(amount) || amount <= 0) return alert('Enter a valid amount');
+
+        if (id) {
+            const idx = stateP.quickAdds.findIndex(q => q.id === id);
+            stateP.quickAdds[idx] = { id, emoji, label, amount, category };
+        } else {
+            stateP.quickAdds.push({ id: Date.now().toString(), emoji, label, amount, category });
+        }
+        
+        saveP();
+        renderQuickAddEditorList();
+        cancelQAEdit();
+    }
+
+    function deleteQuickAdd(id) {
+        stateP.quickAdds = stateP.quickAdds.filter(q => q.id !== id);
+        saveP();
+        renderQuickAddEditorList();
+        if(document.getElementById('qa-edit-id').value === id) cancelQAEdit();
+    }
+
+    function triggerQuickAdd(amt, cat, desc) {
+        stateP.expenses.push({ id: Date.now().toString(), date: toISOLocal(new Date()), amount: amt, category: cat, desc: desc });
+        saveP();
+    }
+
+    // --- Main Form Edit System ---
+    function editP(id) {
+        const ex = stateP.expenses.find(e => e.id === id);
+        if(!ex) return;
+        document.getElementById('p-edit-id').value = ex.id;
+        setDateInput('p-date', ex.date);
+        document.getElementById('p-amount').value = ex.amount;
+        document.getElementById('p-category').value = ex.category;
+        document.getElementById('p-note').value = ex.desc;
+        
+        document.getElementById('form-title').innerHTML = `Edit Expense`;
+        document.getElementById('p-submit-btn').textContent = "Save";
+        document.getElementById('p-cancel-btn').style.display = "block";
+        syncAllSelects();
+        document.getElementById('form-title').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function cancelEdit() {
+        document.getElementById('p-edit-id').value = '';
+        setDateInput('p-date', toISOLocal(new Date()));
+        document.getElementById('p-amount').value = '';
+        document.getElementById('p-note').value = '';
+        document.getElementById('p-category').selectedIndex = 0;
+        document.getElementById('form-title').innerHTML = `Custom Expense`;
+        document.getElementById('p-submit-btn').textContent = "Save";
+        document.getElementById('p-cancel-btn').style.display = "none";
+        syncAllSelects();
+    }
+
+    document.getElementById('form-personal').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('p-edit-id').value;
+        const date = document.getElementById('p-date').value;
+        const amount = parseFloat(document.getElementById('p-amount').value);
+        const category = document.getElementById('p-category').value;
+        let desc = document.getElementById('p-note').value.trim() || cats[category];
+
+        if(id) {
+            const idx = stateP.expenses.findIndex(e => e.id === id);
+            stateP.expenses[idx] = { id, date, amount, category, desc };
+            cancelEdit();
+        } else {
+            stateP.expenses.push({ id: Date.now().toString(), date, amount, category, desc });
+            document.getElementById('p-amount').value = '';
+            document.getElementById('p-note').value = '';
+            document.getElementById('p-category').selectedIndex = 0;
+            document.getElementById('p-amount').focus();
+            syncAllSelects();
+        }
+        saveP();
+    });
+
+    function deleteP(id) {
+        if(confirm('Delete expense?')) { stateP.expenses = stateP.expenses.filter(e => e.id !== id); saveP(); }
+    }
+
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = formatMoney(Math.floor(progress * (end - start) + start));
+            if (progress < 1) window.requestAnimationFrame(step);
+            else obj.innerHTML = formatMoney(end);
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function renderAnalytics(todayTotal, todayData, weeklyTotal, dailyData) {
+        document.getElementById('budget-limit-text').textContent = formatMoney(stateP.budget);
+        document.getElementById('m-total').childNodes[0].textContent = formatMoney(weeklyTotal) + " ";
+        
+        const pct = stateP.budget > 0 ? (weeklyTotal / stateP.budget) * 100 : 100;
+        const fill = document.getElementById('budget-fill');
+        const fillPct = Math.min(pct, 100).toFixed(1);
+        
+        fill.style.width = fillPct + '%';
+        document.getElementById('budget-percent').textContent = `${pct.toFixed(1)}% Used`;
+        
+        const remaining = stateP.budget - weeklyTotal;
+        const budgetRemEl = document.getElementById('budget-remaining');
+        
+        if (remaining < 0) {
+            fill.style.background = 'var(--danger)';
+            budgetRemEl.innerHTML = `<span style="color:var(--danger); font-weight:700;">Over Budget by ${formatMoney(Math.abs(remaining))}</span>`;
+        } else {
+            if(pct > 85) fill.style.background = 'var(--warning)';
+            else fill.style.background = 'var(--success)';
+            budgetRemEl.innerHTML = `Remaining: ${formatMoney(remaining)}`;
+        }
+
+        // Daily Donut Chart
+        let conicStr = []; let curDeg = 0; let topTodayCat = null; let maxTodayVal = -1;
+        catKeys.forEach(cat => {
+            if(todayData[cat] > 0) {
+                if(todayData[cat] > maxTodayVal) { maxTodayVal = todayData[cat]; topTodayCat = cat; }
+                const deg = (todayData[cat] / todayTotal) * 360;
+                conicStr.push(`var(--cat-${cat}) ${curDeg}deg ${curDeg + deg}deg`);
+                curDeg += deg;
+            }
+        });
+
+        const donut = document.getElementById('donut-chart');
+        if(todayTotal === 0) donut.style.background = 'var(--input-bg)';
+        else donut.style.background = `conic-gradient(${conicStr.join(', ')})`;
+        
+        const donutValEl = document.getElementById('donut-total-val');
+        const oldVal = parseFloat(donutValEl.textContent.replace(/[^0-9.-]+/g,"")) || 0;
+        if(oldVal !== todayTotal) animateValue(donutValEl, oldVal, todayTotal, 500);
+        else donutValEl.textContent = formatMoney(todayTotal);
+
+        const box = document.getElementById('insights-box');
+        box.innerHTML = '';
+        
+        if(weeklyTotal === 0 && todayTotal === 0) {
+            box.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding: 2rem 0;">No analytics data for this week.</div>';
+            return;
+        }
+
+        if(topTodayCat) {
+            box.innerHTML += `<div class="insight-card"><div class="insight-title">Highest Spend (Today)</div><div class="insight-val">${cats[topTodayCat]} (${formatMoney(maxTodayVal)})</div></div>`;
+        } else {
+            box.innerHTML += `<div class="insight-card"><div class="insight-title">Today's Status</div><div class="insight-val" style="color:var(--success)">No spending yet 🎉</div></div>`;
+        }
+
+        if(weeklyTotal > 0) {
+            let maxDayVal = -1; let maxDayIdx = -1;
+            dailyData.forEach((d, i) => { if(d.total > maxDayVal) { maxDayVal = d.total; maxDayIdx = i; } });
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            box.innerHTML += `<div class="insight-card" style="border-left-color:var(--warning);"><div class="insight-title">Costliest Day (This Week)</div><div class="insight-val">${days[maxDayIdx]}</div></div>`;
+        }
+    }
+
+    function renderPersonal() {
+        renderQuickAdds();
+        const weekDays = Array.from({length:7}, (_,i) => { let d = new Date(currentWeekStart); d.setDate(d.getDate()+i); return d; });
+        const todayStr = toISOLocal(new Date());
+        
+        document.getElementById('week-range-label').textContent = `${formatDateObj(toISOLocal(weekDays[0]))} - ${formatDateObj(toISOLocal(weekDays[6]))}`;
+
+        let weeklyTotal = 0; let todayTotal = 0;
+        let dailyData = Array.from({length: 7}, () => ({ total: 0, 'food-main': 0, 'food-other': 0, 'travel-main': 0, 'travel-other': 0, 'other': 0 }));
+        let todayData = { 'food-main': 0, 'food-other': 0, 'travel-main': 0, 'travel-other': 0, 'other': 0 };
+
+        const startStr = toISOLocal(weekDays[0]); const endStr = toISOLocal(weekDays[6]);
+
+        stateP.expenses.forEach(ex => {
+            if (ex.date >= startStr && ex.date <= endStr) {
+                weeklyTotal += ex.amount;
+                let idx = (new Date(ex.date).getDay() || 7) - 1; 
+                dailyData[idx].total += ex.amount;
+                if(dailyData[idx][ex.category] !== undefined) dailyData[idx][ex.category] += ex.amount;
+            }
+            if (ex.date === todayStr) {
+                todayTotal += ex.amount;
+                if(todayData[ex.category] !== undefined) todayData[ex.category] += ex.amount;
+            }
+        });
+
+        document.getElementById('w-total').textContent = formatMoney(weeklyTotal);
+        document.getElementById('d-total').textContent = formatMoney(todayTotal);
+
+        renderAnalytics(todayTotal, todayData, weeklyTotal, dailyData);
+
+        const wrapper = document.getElementById('days-wrapper');
+        wrapper.innerHTML = '';
+        const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        weekDays.forEach((dObj, i) => {
+            const dStr = toISOLocal(dObj);
+            const total = dailyData[i].total;
+            const div = document.createElement('div');
+            
+            div.className = `day-card ${dStr === todayStr ? 'active' : ''}`;
+            div.onclick = () => openDayModal(dStr);
+            
+            div.innerHTML = `
+                <div class="day-name">${dayNames[i]}</div>
+                <div class="day-date">${dObj.getDate()}</div>
+                <div class="day-total ${total === 0 ? 'zero' : 'has-amount'}">${total > 0 ? formatMoney(total) : '-'}</div>
+            `;
+            wrapper.appendChild(div);
+        });
+
+        const chartEl = document.getElementById('w-chart');
+        chartEl.innerHTML = '';
+        let maxTotal = Math.max(...dailyData.map(d => d.total), 100); 
+
+        dailyData.forEach((dInfo, i) => {
+            const pctTotal = (dInfo.total / maxTotal) * 100;
+            let segs = '';
+            catKeys.forEach(c => { if(dInfo[c]>0) segs += `<div class="bar-segment seg-${c}" style="height:${(dInfo[c]/dInfo.total)*100}%"></div>`; });
+            chartEl.innerHTML += `
+                <div class="chart-col">
+                    <div class="bar-tooltip">${formatMoney(dInfo.total)}</div>
+                    <div class="bar-track">
+                        <div class="bar-stack" style="height:${dInfo.total>0?pctTotal:2}%; ${dInfo.total===0?'opacity:0;':''}">${segs}</div>
+                    </div>
+                    <div class="bar-label">${dayNames[i][0]}</div>
+                </div>
+            `;
+        });
+
+        document.getElementById('w-legend').innerHTML = catKeys.map(c => `<div class="legend-item"><div class="legend-color seg-${c}"></div><span>${cats[c]}</span></div>`).join('');
+        renderPersonalHistory();
+    }
+
+    function renderPersonalHistory() {
+        const listEl = document.getElementById('p-list');
+        const search = document.getElementById('search-desc').value.toLowerCase();
+        const filter = document.getElementById('filter-cat').value;
+
+        let filtered = stateP.expenses.filter(e => {
+            const matchSearch = e.desc.toLowerCase().includes(search);
+            const matchFilter = filter === 'all' || e.category === filter;
+            return matchSearch && matchFilter;
+        }).sort((a,b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
+
+        listEl.innerHTML = '';
+        if(filtered.length === 0) { listEl.innerHTML = '<li class="empty-state" style="padding:1.5rem; text-align:center; color:var(--text-muted);">No results found.</li>'; return; }
+        
+        filtered.slice(0, 30).forEach(ex => {
+            listEl.innerHTML += `
+                <li class="history-item">
+                    <div class="history-details">
+                        <span class="history-title">${ex.desc}</span>
+                        <span class="history-meta">${formatDateObj(ex.date)} <span class="badge cat-${ex.category}">${cats[ex.category]}</span></span>
+                    </div>
+                    <div class="history-right">
+                        <span class="history-amount amount-neg">${formatMoney(ex.amount)}</span>
+                        <button class="btn-action" title="Edit" onclick="editP('${ex.id}')">✏️</button>
+                        <button class="btn-action delete" title="Delete" onclick="deleteP('${ex.id}')">×</button>
+                    </div>
+                </li>
+            `;
+        });
+    }
+
+    // ==========================================
+    // ROOMMATES
+    // ==========================================
+    function getBalances() {
+        const bals = { 1: 0, 2: 0, 3: 0 };
+        stateR.transactions.forEach(t => { bals[t.roommateId] += t.type==='add' ? t.amount : -t.amount; });
+        return bals;
+    }
+
+    function renameR(id, val) { const r = stateR.roommates.find(x => x.id === id); if(r && val.trim()){ r.name = val.trim(); saveR(); syncAllSelects(); } }
+    function deleteR(id) { if(confirm('Delete this?')) { stateR.transactions = stateR.transactions.filter(t => t.id !== id); saveR(); } }
+
+    function renderRoommates() {
+        const bals = getBalances();
+        let owed = 0; let owe = 0;
+        const dash = document.getElementById('dashboard'); dash.innerHTML = '';
+        
+        stateR.roommates.forEach(r => {
+            const b = bals[r.id];
+            if(b>0) owed+=b; if(b<0) owe+=Math.abs(b);
+            const isO = b>0;
+            const cls = b===0 ? 'settled' : (isO ? 'owes-me' : 'paid-up');
+            const txt = b===0 ? 'Settled up' : (isO ? 'Owes you' : 'You owe them');
+
+            const card = document.createElement('div'); card.className = 'card glass-pane';
+            card.innerHTML = `<input type="text" class="roommate-name" value="${r.name}" data-id="${r.id}"><div class="balance-label">${txt}</div><div class="balance-amount ${cls}">${formatMoney(b)}</div>`;
+            card.addEventListener('click', e => { if(e.target.tagName !== 'INPUT') openRoommateModal(r.id); });
+            dash.appendChild(card);
+        });
+
+        document.getElementById('total-owed').textContent = formatMoney(owed);
+        document.getElementById('total-owe').textContent = formatMoney(owe);
+
+        document.querySelectorAll('.roommate-name').forEach(inp => {
+            inp.addEventListener('change', e => renameR(parseInt(e.target.dataset.id), e.target.value));
+            inp.addEventListener('blur', renderSelect);
+        });
+        renderSelect(); renderRHistory();
+    }
+
+    function renderSelect() {
+        const sel = document.getElementById('roommate-select');
+        const curr = sel.value; sel.innerHTML = '';
+        stateR.roommates.forEach(r => { sel.innerHTML += `<option value="${r.id}">${r.name}</option>`; });
+        if(curr) sel.value = curr;
+        syncAllSelects();
+    }
+
+    function renderRHistory() {
+        const hl = document.getElementById('history-list'); hl.innerHTML = '';
+        const sorted = [...stateR.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+        if(sorted.length===0) { hl.innerHTML = '<li class="empty-state" style="padding:1.5rem; text-align:center; color:var(--text-muted);">Ledger empty.</li>'; return; }
+
+        sorted.slice(0,20).forEach(t => {
+            const rm = stateR.roommates.find(r => r.id === t.roommateId);
+            const isA = t.type==='add';
+            hl.innerHTML += `
+                <li class="history-item">
+                    <div class="history-details">
+                        <span class="history-title">${rm?rm.name:'?'} • ${t.note}</span>
+                        <span class="history-meta">${formatDateObj(t.date)}</span>
+                    </div>
+                    <div class="history-right">
+                        <span class="badge ${isA?'debt':'credit'}">${isA?'Owes You':'You Owe'}</span>
+                        <span class="history-amount ${isA?'amount-pos':'amount-neg'}">${isA?'+':'-'}${formatMoney(t.amount)}</span>
+                        <button class="btn-action delete" onclick="deleteR('${t.id}')">×</button>
+                    </div>
+                </li>
+            `;
+        });
+    }
+
+    document.getElementById('transaction-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const amt = parseFloat(document.getElementById('r-amount').value);
+        if(isNaN(amt)||amt<=0) return;
+        stateR.transactions.push({ id: Date.now().toString(), roommateId: parseInt(document.getElementById('roommate-select').value), type: document.getElementById('transaction-type').value, amount: amt, note: document.getElementById('r-note').value.trim() || 'Ledger Transaction', date: new Date().toISOString() });
+        saveR(); 
+        document.getElementById('r-amount').value = ''; 
+        document.getElementById('r-note').value = '';
+        document.getElementById('transaction-type').selectedIndex = 0;
+        syncAllSelects();
+    });
+
+
+    // ==========================================
+    // UNIFIED MODAL & PRINTING
+    // ==========================================
+    function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); activeModal = {type:null, id:null}; }
+    
+    document.getElementById('modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('modal-overlay')) closeModal(); });
+    document.getElementById('quick-add-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('quick-add-modal-overlay')) closeQuickAddModal(); });
+    document.getElementById('budget-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('budget-modal-overlay')) closeBudgetModal(); });
+    document.getElementById('calendar-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('calendar-modal-overlay')) closeCalendar(); });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (document.getElementById('calendar-modal-overlay').classList.contains('active')) closeCalendar();
+            else if (document.getElementById('quick-add-modal-overlay').classList.contains('active')) closeQuickAddModal();
+            else if (document.getElementById('budget-modal-overlay').classList.contains('active')) closeBudgetModal();
+            else if (document.getElementById('modal-overlay').classList.contains('active')) closeModal();
+        }
+    });
+
+    function openDayModal(dateStr) {
+        activeModal = { type: 'day', id: dateStr };
+        document.getElementById('modal-report-section').style.display = 'none';
+        document.getElementById('btn-settle').style.display = 'none';
+        document.getElementById('modal-title').textContent = `Expenses on ${formatDateObj(dateStr)}`;
+        document.getElementById('modal-status-label').textContent = 'Daily Total:';
+        
+        const dayEx = stateP.expenses.filter(e => e.date === dateStr).reverse();
+        const tot = dayEx.reduce((s, e) => s + e.amount, 0);
+        document.getElementById('modal-status-amount').textContent = formatMoney(tot);
+        document.getElementById('modal-status-amount').className = 'modal-status-amount ' + (tot>0?'amount-neg':'');
+
+        const ml = document.getElementById('modal-history-list'); ml.innerHTML = '';
+        if(dayEx.length===0) ml.innerHTML = '<li class="empty-state" style="padding:1.5rem; text-align:center; color:var(--text-muted);">No expenses.</li>';
+        else dayEx.forEach(ex => { ml.innerHTML += `<li class="history-item"><div class="history-details"><span class="history-title">${ex.desc}</span><span class="history-meta"><span class="badge cat-${ex.category}">${cats[ex.category]}</span></span></div><div class="history-right"><span class="history-amount amount-neg">${formatMoney(ex.amount)}</span><button class="btn-action delete" onclick="deleteP('${ex.id}')">×</button></div></li>`; });
+        document.getElementById('modal-overlay').classList.add('active');
+    }
+
+    function openPersonalReportModal() {
+        activeModal = { type: 'personal-report', id: null };
+        document.getElementById('modal-report-section').style.display = 'flex';
+        document.getElementById('modal-status-area').style.display = 'none';
+        document.getElementById('modal-title').textContent = `Export Report`;
+        
+        const today = new Date();
+        setDateInput('report-start', toISOLocal(new Date(today.getFullYear(), today.getMonth(), 1)));
+        setDateInput('report-end', toISOLocal(today));
+
+        const ml = document.getElementById('modal-history-list'); ml.innerHTML = '<li class="empty-state" style="padding:1.5rem; text-align:center; color:var(--text-muted);">Select dates and click Print.</li>';
+        document.getElementById('modal-overlay').classList.add('active');
+    }
+
+    function openRoommateModal(roomId) {
+        activeModal = { type: 'roommate', id: roomId };
+        const r = stateR.roommates.find(x => x.id === roomId); if(!r) return;
+        
+        document.getElementById('modal-report-section').style.display = 'flex';
+        document.getElementById('modal-status-area').style.display = 'flex';
+        const today = new Date();
+        setDateInput('report-start', toISOLocal(new Date(today.getFullYear(), today.getMonth(), 1)));
+        setDateInput('report-end', toISOLocal(today));
+
+        document.getElementById('modal-title').textContent = `${r.name}`;
+        document.getElementById('modal-status-label').textContent = 'Balance:';
+        
+        const bal = getBalances()[roomId];
+        const amtEl = document.getElementById('modal-status-amount');
+        const btn = document.getElementById('btn-settle');
+        
+        if (bal === 0) { amtEl.textContent = 'Settled Up'; amtEl.className = 'modal-status-amount settled'; btn.style.display = 'none'; }
+        else { amtEl.textContent = `${bal>0?'Owes you':'You owe'} ${formatMoney(bal)}`; amtEl.className = `modal-status-amount ${bal>0?'owes-me':'paid-up'}`; btn.style.display = 'block'; }
+
+        const ml = document.getElementById('modal-history-list'); ml.innerHTML = '';
+        const trans = stateR.transactions.filter(t => t.roommateId === roomId).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if(trans.length===0) ml.innerHTML = '<li class="empty-state" style="padding:1.5rem; text-align:center; color:var(--text-muted);">No history.</li>';
+        else trans.forEach(t => { const isA = t.type==='add'; ml.innerHTML += `<li class="history-item"><div class="history-details"><span class="history-title">${t.note}</span><span class="history-meta">${formatDateObj(t.date)}</span></div><div class="history-right"><span class="badge ${isA?'debt':'credit'}">${isA?'Owes You':'You Owe'}</span><span class="history-amount ${isA?'amount-pos':'amount-neg'}">${isA?'+':'-'}${formatMoney(t.amount)}</span><button class="btn-action delete" onclick="deleteTransaction('${t.id}')">×</button></div></li>`; });
+        document.getElementById('modal-overlay').classList.add('active');
+    }
+
+    function settleUpActiveRoommate() {
+        if(activeModal.type !== 'roommate') return;
+        const b = getBalances()[activeModal.id];
+        if(b===0 || !confirm('Mark fully settled?')) return;
+        stateR.transactions.push({ id: Date.now().toString(), roommateId: activeModal.id, type: b>0?'remove':'add', amount: Math.abs(b), note: 'Settled Up', date: new Date().toISOString() });
+        saveR();
+    }
+
+    function generatePrintReport() {
+        const s = document.getElementById('report-start').value;
+        const e = document.getElementById('report-end').value;
+        if(!s || !e || s > e) return alert("Invalid date range.");
+
+        let html = `<html><head><title>Report</title><style>body{font-family:-apple-system,sans-serif;color:#000;padding:2rem;max-width:800px;margin:0 auto;}.header{text-align:center;border-bottom:2px solid #e2e8f0;padding-bottom:1rem;margin-bottom:2rem;}h1{margin:0;color:#007AFF;}.summary{background:#f8fafc;padding:1.5rem;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:2rem;text-align:center;}.amount{font-size:2rem;font-weight:800;margin:0;}table{width:100%;border-collapse:collapse;margin-top:1rem;}th,td{padding:0.75rem;text-align:left;border-bottom:1px solid #e2e8f0;}th{background:#f8fafc;color:#8E8E93;text-transform:uppercase;font-size:0.85rem;}</style></head><body>`;
+        
+        if (activeModal.type === 'personal-report') {
+            const data = stateP.expenses.filter(ex => ex.date >= s && ex.date <= e).sort((a,b) => new Date(a.date)-new Date(b.date));
+            const tot = data.reduce((sum, x)=>sum+x.amount, 0);
+            html += `<div class="header"><h1>Personal Expenses Report</h1><p>${new Date(s).toLocaleDateString()} to ${new Date(e).toLocaleDateString()}</p></div><div class="summary"><h2>Total Spending</h2><p class="amount" style="color:#FF3B30">${formatMoney(tot)}</p></div><table><thead><tr><th>Date</th><th>Category</th><th>Note</th><th>Amount</th></tr></thead><tbody>`;
+            data.forEach(x => { html += `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${cats[x.category]}</td><td>${x.desc}</td><td style="color:#FF3B30;font-weight:bold;">${formatMoney(x.amount)}</td></tr>`; });
+        } else {
+            const rm = stateR.roommates.find(x => x.id === activeModal.id);
+            const data = stateR.transactions.filter(t => t.date.substring(0,10) >= s && t.date.substring(0,10) <= e && t.roommateId === rm.id).sort((a,b) => new Date(a.date)-new Date(b.date));
+            let net = 0; data.forEach(t => net += t.type==='add'?t.amount:-t.amount);
+            const stat = net>0?'They Owe You':(net<0?'You Owe Them':'Settled');
+            const col = net>0?'#34C759':'#FF3B30';
+            html += `<div class="header"><h1>Roommate Ledger: ${rm.name}</h1><p>${new Date(s).toLocaleDateString()} to ${new Date(e).toLocaleDateString()}</p></div><div class="summary"><h2>Period Net Balance</h2><p class="amount" style="color:${col}">${formatMoney(net)}</p><p style="margin:0;font-weight:bold;color:${col}">${stat}</p></div><table><thead><tr><th>Date</th><th>Note</th><th>Amount</th></tr></thead><tbody>`;
+            data.forEach(x => { const isA=x.type==='add'; html += `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.note}</td><td style="color:${isA?'#34C759':'#FF3B30'};font-weight:bold;">${isA?'+':'-'}${formatMoney(x.amount)}</td></tr>`; });
+        }
+        
+        html += `</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`;
+        const win = window.open('','_blank'); win.document.write(html); win.document.close();
+    }
+
+    function exportCSV() {
+        let csv = "data:text/csv;charset=utf-8,";
+        if (currentTab === 'personal') {
+            csv += "Date,Category,Amount (Rs.),Description\n";
+            stateP.expenses.forEach(e => csv += `${new Date(e.date).toLocaleDateString()},${cats[e.category]},${e.amount},"${e.desc.replace(/"/g, '""')}"\n`);
+        } else {
+            csv += "Date,Roommate,Type,Amount (Rs.),Note\n";
+            stateR.transactions.forEach(t => csv += `${new Date(t.date).toLocaleDateString()},${(stateR.roommates.find(rm=>rm.id===t.roommateId)||{}).name||'?'},${t.type},${t.amount},"${t.note.replace(/"/g, '""')}"\n`);
+        }
+        const a = document.createElement("a"); a.href = encodeURI(csv); a.download = `export_${currentTab}.csv`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    syncAllSelects();
+    renderPersonal(); renderRoommates();
+</script>
+</body>
+</html>
