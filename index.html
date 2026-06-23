@@ -10,9 +10,6 @@
             --bg-color: #F2F2F7; 
             --surface: #FFFFFF;
             --glass-surface: rgba(255, 255, 255, 0.85);
-            --modal-bg: rgba(255, 255, 255, 0.95); /* Brighter modal background to prevent dark overlay bleed */
-            --overlay-bg: rgba(0, 0, 0, 0.25); /* Softer overlay in light mode */
-            
             --primary: #007AFF; 
             --primary-hover: #005bb5;
             --danger: #FF3B30; 
@@ -45,9 +42,6 @@
             --bg-color: #000000; 
             --surface: #1C1C1E; 
             --glass-surface: rgba(28, 28, 30, 0.85);
-            --modal-bg: rgba(28, 28, 30, 0.95);
-            --overlay-bg: rgba(0, 0, 0, 0.5);
-
             --primary: #0A84FF; 
             --primary-hover: #0060d1;
             --danger: #FF453A; 
@@ -92,9 +86,10 @@
         /* --- iOS Header & Logo --- */
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;}
         
-        .header-titles h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.03em; display: flex; align-items: center; }
+        .header-titles { display: flex; flex-direction: column; }
+        .header-titles h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.03em; display: flex; align-items: center; justify-content: center; }
         .pro-badge { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #ffffff; font-size: 0.9rem; padding: 0.2rem 0.6rem; border-radius: 8px; margin-left: 0.5rem; font-weight: 800; letter-spacing: 0.05em; box-shadow: var(--shadow-glow); transform: translateY(-2px); }
-        .header-titles p { color: var(--text-muted); margin: 0.3rem 0 0 0; font-weight: 500; font-size: 0.95rem; }
+        .header-titles p { color: var(--text-muted); margin: 0.3rem 0 0 0; font-weight: 500; font-size: 0.95rem; text-align: left; width: 100%; }
         
         .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .controls .btn-icon { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 99px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: var(--transition-smooth); display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
@@ -144,7 +139,7 @@
         /* FIX: Ensure Read-Only inputs don't fade to invisible in Light Mode */
         input:read-only { opacity: 1; -webkit-text-fill-color: var(--text-main); color: var(--text-main); }
 
-        /* --- NEW: Custom Glass Dropdown Menus --- */
+        /* --- Custom Glass Dropdown Menus --- */
         select { display: none; }
         
         .custom-select-container { position: relative; width: 100%; font-family: inherit; }
@@ -157,12 +152,13 @@
         .custom-select-trigger:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); }
         .custom-select-trigger:active { transform: scale(0.98); opacity: 0.8; }
         
+        /* FIXED POSITION PORTAL - Breaks out of all Z-Index traps */
         .custom-select-options {
-            position: absolute; left: 0; right: 0;
-            background: var(--glass-surface); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            position: fixed; 
+            background: var(--glass-surface); backdrop-filter: saturate(180%) blur(30px); -webkit-backdrop-filter: saturate(180%) blur(30px);
             border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-float);
-            z-index: 9999; max-height: 220px; overflow-y: auto;
-            opacity: 0; pointer-events: none; transform: scaleY(0.95); transition: var(--transition-smooth);
+            z-index: 999999; max-height: 220px; overflow-y: auto;
+            opacity: 0; pointer-events: none; transform: scaleY(0.95); transition: opacity 0.2s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .custom-select-options.open { opacity: 1; pointer-events: auto; transform: scaleY(1); }
         
@@ -237,8 +233,9 @@
         .week-nav button { background: var(--input-bg); border: none; padding: 0.5rem 1rem; border-radius: 99px; font-weight: 600; cursor: pointer; transition: var(--transition-spring); color: var(--primary); font-size: 0.9rem;}
         .week-nav button:hover { background: var(--border); }
         
-        .days-container { width: 100%; overflow: hidden; padding: 10px 5px; margin: -10px -5px; }
-        .days-wrapper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; width: 100%; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .days-container { width: 100%; overflow-x: auto; overflow-y: hidden; padding: 15px 5px 20px 5px; margin: -15px -5px -20px -5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .days-container::-webkit-scrollbar { display: none; }
+        .days-wrapper { display: grid; grid-template-columns: repeat(7, minmax(65px, 1fr)); gap: 0.5rem; width: 100%; min-width: max-content; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         
         .day-card { background: var(--surface); border: none; border-radius: 16px; padding: 0.75rem 0.25rem; text-align: center; cursor: pointer; transition: var(--transition-spring); min-width: 60px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .day-card.active { background: var(--primary); color: white; box-shadow: var(--shadow-glow); }
@@ -262,7 +259,7 @@
         }
         .chart-col:hover .bar-track { background: var(--border); transform: scaleY(1.02); transform-origin: bottom; }
 
-        .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; border-radius: 99px; overflow: hidden; position: relative; }
+        .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; border-radius: 99px; overflow: hidden; position: relative; }
         .bar-segment { width: 100%; position: relative; transition: opacity 0.2s; }
         .bar-segment:hover { opacity: 0.85; }
         .bar-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 600; }
@@ -289,13 +286,13 @@
         /* --- Roommates UI --- */
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .card { background: var(--surface); padding: 1.5rem; border-radius: 20px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-spring); position: relative;}
-        .card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-float); border-color: var(--primary); padding-bottom: 2.5rem; }
+        .card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-float); padding-bottom: 2.5rem; }
         .card::after { content: 'Click to view details'; position: absolute; bottom: 12px; font-size: 0.75rem; color: var(--primary); opacity: 0; transition: var(--transition-smooth); transform: translateY(10px); font-weight: 700;}
         .card:hover::after { opacity: 1; transform: translateY(0); }
         .roommate-name { font-size: 1.3rem; font-weight: 700; background: var(--input-bg); border: none; border-radius: 10px; text-align: center; width: 90%; padding: 0.4rem; outline: none; color: var(--text-main); transition: var(--transition-smooth); letter-spacing: -0.02em;}
-        .roommate-name:focus { box-shadow: 0 0 0 2px var(--primary); background: var(--surface);}
+        .roommate-name:focus { box-shadow: 0 0 0 2px var(--primary); }
         .balance-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-        .balance-amount { font-size: 2.2rem; font-weight: 700; margin-top: 0.2rem; line-height: 1; letter-spacing:-0.03em; color: var(--text-main);}
+        .balance-amount { font-size: 2.2rem; font-weight: 700; margin-top: 0.2rem; line-height: 1; letter-spacing:-0.03em;}
         .owes-me { color: var(--success); } .paid-up { color: var(--danger); } .settled { color: var(--text-muted); }
 
         /* --- Interactive Lists --- */
@@ -326,13 +323,13 @@
         .btn-action.delete:hover { background: rgba(255, 59, 48, 0.15); }
 
         /* --- iOS Glassmorphism Modals --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--overlay-bg); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-        .modal { background: var(--modal-bg); color: var(--text-main); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 24px; display: flex; flex-direction: column; transform: translateY(40px) scale(0.97); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); border: 1px solid var(--border);}
+        .modal { background: var(--glass-surface); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 24px; display: flex; flex-direction: column; transform: translateY(40px) scale(0.97); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); border: 1px solid var(--border);}
         .modal-overlay.active .modal { transform: translateY(0) scale(1); }
         
-        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-color); }
         .modal-header h2 { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--text-main); letter-spacing: -0.02em;}
         .btn-close { background: var(--input-bg); border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: var(--transition-spring); }
         .btn-close:hover { background: var(--border); color: var(--text-main); }
@@ -341,12 +338,12 @@
         
         .modal-status-card { background: var(--input-bg); padding: 1.25rem; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;}
         .modal-status-text { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
-        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-main);}
+        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em;}
 
-        .report-section { background: var(--input-bg); padding: 1rem; border-radius: 16px; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; color: var(--text-main);}
+        .report-section { background: var(--input-bg); padding: 1rem; border-radius: 16px; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
 
         /* --- iOS Custom Date Picker Modal UI --- */
-        .cal-modal { background: var(--modal-bg); color: var(--text-main); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: blur(35px); width: 100%; max-width: 320px; border-radius: 24px; padding: 1.25rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border); transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .cal-modal { background: var(--glass-surface); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: blur(35px); width: 100%; max-width: 320px; border-radius: 24px; padding: 1.25rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border); transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .modal-overlay.active .cal-modal { transform: translateY(0) scale(1); }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .cal-month-year { font-weight: 600; font-size: 1.1rem; color: var(--text-main); }
@@ -377,7 +374,7 @@
     <header>
         <div class="header-titles">
             <h1>Ledger <span class="pro-badge">PRO</span></h1>
-            <p>Your finances & shared expenses.</p>
+            <p style="text-align: left; width: 100%;">Your finances & shared expenses.</p>
         </div>
         <div class="controls">
             <button class="btn-icon" onclick="exportCSV()">
@@ -717,12 +714,32 @@
 </div>
 
 <script>
-    // --- Custom Select Logic ---
+    // --- PORTAL Custom Select Logic ---
+    function closeAllSelects() {
+        document.querySelectorAll('.custom-select-options').forEach(opt => opt.classList.remove('open'));
+    }
+    
+    // Close selects on outside click
+    document.addEventListener('click', closeAllSelects);
+    
+    // Close on scroll, EXCEPT when scrolling inside the dropdown itself
+    window.addEventListener('scroll', function(e) {
+        if (e.target && e.target.classList && e.target.classList.contains('custom-select-options')) {
+            return; 
+        }
+        closeAllSelects();
+    }, true); 
+    
+    window.addEventListener('resize', closeAllSelects);
+
     function setupCustomSelect(selectId) {
         const select = document.getElementById(selectId);
         if(!select) return;
         
         let container = select.parentElement;
+        let optionsDivId = 'portal-options-' + selectId;
+        let optionsDiv = document.getElementById(optionsDivId);
+
         if (!container.classList.contains('custom-select-container')) {
             container = document.createElement('div');
             container.className = 'custom-select-container';
@@ -734,33 +751,33 @@
             trigger.innerHTML = `<span></span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
             container.appendChild(trigger);
 
-            const optionsDiv = document.createElement('div');
+            // Create Portaled Options Div in Body
+            optionsDiv = document.createElement('div');
+            optionsDiv.id = optionsDivId;
             optionsDiv.className = 'custom-select-options';
-            container.appendChild(optionsDiv);
+            document.body.appendChild(optionsDiv);
 
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
-                document.querySelectorAll('.custom-select-options').forEach(opt => {
-                    if(opt !== optionsDiv) opt.classList.remove('open');
-                });
+                const isOpen = optionsDiv.classList.contains('open');
+                closeAllSelects(); 
                 
-                const rect = trigger.getBoundingClientRect();
-                if (window.innerHeight - rect.bottom < 220 && rect.top > 220) {
-                    optionsDiv.style.top = 'auto';
-                    optionsDiv.style.bottom = 'calc(100% + 5px)';
-                    optionsDiv.style.transformOrigin = 'bottom center';
-                } else {
-                    optionsDiv.style.top = 'calc(100% + 5px)';
+                if (!isOpen) {
+                    const rect = trigger.getBoundingClientRect();
+                    optionsDiv.style.width = rect.width + 'px';
+                    optionsDiv.style.left = rect.left + 'px';
+                    
+                    // ALWAYS DROP DOWN
+                    optionsDiv.style.top = (rect.bottom + 5) + 'px';
                     optionsDiv.style.bottom = 'auto';
                     optionsDiv.style.transformOrigin = 'top center';
-                }
 
-                optionsDiv.classList.toggle('open');
+                    optionsDiv.classList.add('open');
+                }
             });
         }
 
         const triggerSpan = container.querySelector('.custom-select-trigger span');
-        const optionsDiv = container.querySelector('.custom-select-options');
         
         if(select.options.length > 0) {
             triggerSpan.textContent = select.options[select.selectedIndex]?.text || select.options[0].text;
@@ -768,6 +785,8 @@
             triggerSpan.textContent = 'Select...';
         }
 
+        // Re-populate options dynamically
+        optionsDiv = document.getElementById(optionsDivId);
         optionsDiv.innerHTML = '';
         Array.from(select.options).forEach(option => {
             const optDiv = document.createElement('div');
@@ -788,10 +807,6 @@
     function syncAllSelects() {
         ['p-category', 'qa-category', 'filter-cat', 'roommate-select', 'transaction-type'].forEach(id => setupCustomSelect(id));
     }
-
-    document.addEventListener('click', () => {
-        document.querySelectorAll('.custom-select-options').forEach(opt => opt.classList.remove('open'));
-    });
 
 
     // --- Global Controls ---
@@ -885,8 +900,8 @@
     }
 
     // --- Data Storage ---
-    const STORE_P = 'ledger_p_ios_final';
-    const STORE_R = 'ledger_r_ios_final';
+    const STORE_P = 'ledger_p_ios_v13';
+    const STORE_R = 'ledger_r_ios_v13';
 
     let stateP = JSON.parse(localStorage.getItem(STORE_P));
     if (!stateP) {
@@ -1158,7 +1173,7 @@
         
         if (remaining < 0) {
             fill.style.background = 'var(--danger)';
-            budgetRemEl.innerHTML = `<span style="color:var(--danger); font-weight:600;">Over Budget by ${formatMoney(Math.abs(remaining))}</span>`;
+            budgetRemEl.innerHTML = `<span style="color:var(--danger); font-weight:700;">Over Budget by ${formatMoney(Math.abs(remaining))}</span>`;
         } else {
             if(pct > 85) fill.style.background = 'var(--warning)';
             else fill.style.background = 'var(--success)';
@@ -1177,7 +1192,7 @@
         });
 
         const donut = document.getElementById('donut-chart');
-        if(todayTotal === 0) donut.style.background = 'transparent';
+        if(todayTotal === 0) donut.style.background = 'var(--input-bg)';
         else donut.style.background = `conic-gradient(${conicStr.join(', ')})`;
         
         const donutValEl = document.getElementById('donut-total-val');
@@ -1336,7 +1351,7 @@
             const cls = b===0 ? 'settled' : (isO ? 'owes-me' : 'paid-up');
             const txt = b===0 ? 'Settled up' : (isO ? 'Owes you' : 'You owe them');
 
-            const card = document.createElement('div'); card.className = 'card glass-pane';
+            const card = document.createElement('div'); card.className = 'card';
             card.innerHTML = `<input type="text" class="roommate-name" value="${r.name}" data-id="${r.id}"><div class="balance-label">${txt}</div><div class="balance-amount ${cls}">${formatMoney(b)}</div>`;
             card.addEventListener('click', e => { if(e.target.tagName !== 'INPUT') openRoommateModal(r.id); });
             dash.appendChild(card);
