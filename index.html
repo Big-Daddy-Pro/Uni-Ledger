@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ledger Pro</title>
-    <!-- Simple SVG Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💸</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <style>
         :root {
             /* Apple Light Theme Variables */
@@ -137,7 +136,6 @@
         
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
-
         input:read-only { opacity: 1; -webkit-text-fill-color: var(--text-main); color: var(--text-main); }
 
         /* --- Custom Glass Dropdown Menus --- */
@@ -153,7 +151,6 @@
         .custom-select-trigger:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); }
         .custom-select-trigger:active { transform: scale(0.98); opacity: 0.8; }
         
-        /* FIXED POSITION PORTAL - Breaks out of all Z-Index traps */
         .custom-select-options {
             position: fixed; 
             background: var(--glass-surface); backdrop-filter: saturate(180%) blur(30px); -webkit-backdrop-filter: saturate(180%) blur(30px);
@@ -194,7 +191,6 @@
         .budget-bar-fill { height: 100%; background: var(--success); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s; width: 0%; border-radius: 99px;}
         .budget-meta { display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted); font-weight: 500;}
 
-        /* --- Edit Buttons Fix --- */
         .btn-edit-shortcuts { background: transparent; color: var(--primary); border: none; padding: 0.3rem 0.5rem; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: var(--transition-smooth); letter-spacing: -0.01em; -webkit-tap-highlight-color: transparent; }
         .btn-edit-shortcuts:hover, .btn-edit-shortcuts:active { opacity: 0.5; transform: scale(0.95); }
 
@@ -251,13 +247,7 @@
         .chart-container { height: 220px; display: flex; align-items: flex-end; justify-content: space-around; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem;}
         .chart-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
         
-        .bar-track {
-            width: 100%; max-width: 36px; height: 100%;
-            background: var(--input-bg); border-radius: 99px;
-            display: flex; flex-direction: column; justify-content: flex-end;
-            padding: 3px; box-sizing: border-box;
-            transition: var(--transition-spring);
-        }
+        .bar-track { width: 100%; max-width: 36px; height: 100%; background: var(--input-bg); border-radius: 99px; display: flex; flex-direction: column; justify-content: flex-end; padding: 3px; box-sizing: border-box; transition: var(--transition-spring); }
         .chart-col:hover .bar-track { background: var(--border); transform: scaleY(1.02); transform-origin: bottom; }
 
         .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; border-radius: 99px; overflow: hidden; position: relative; }
@@ -296,6 +286,12 @@
         .balance-amount { font-size: 2.2rem; font-weight: 700; margin-top: 0.2rem; line-height: 1; letter-spacing:-0.03em;}
         .owes-me { color: var(--success); } .paid-up { color: var(--danger); } .settled { color: var(--text-muted); }
 
+        /* Add Roommate Card */
+        .add-roommate-card { border: 2px dashed var(--primary); background: transparent; box-shadow: none; justify-content: center; align-items: center; min-height: 120px; }
+        .add-roommate-card:hover { background: rgba(0, 122, 255, 0.05); border-style: solid; padding-bottom: 1.5rem; transform: scale(1.02); }
+        [data-theme="dark"] .add-roommate-card:hover { background: rgba(10, 132, 255, 0.1); }
+        .add-roommate-card::after { display: none !important; }
+
         /* --- Interactive Lists --- */
         .history-list { list-style: none; padding: 0; margin: 0; max-height: 450px; overflow-y: auto; padding-right: 0.5rem; }
         .history-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border); transition: var(--transition-spring); }
@@ -311,7 +307,6 @@
         .badge { padding: 0.2rem 0.5rem; border-radius: 5px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
         .badge.debt { background: rgba(52, 199, 89, 0.15); color: var(--success); }
         .badge.credit { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
-        
         .badge.cat-food-main { background: rgba(90, 200, 250, 0.15); color: var(--cat-food-main); }
         .badge.cat-food-other { background: rgba(175, 82, 222, 0.15); color: var(--cat-food-other); }
         .badge.cat-travel-main { background: rgba(255, 149, 0, 0.15); color: var(--cat-travel-main); }
@@ -327,10 +322,11 @@
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-        .modal { background: var(--glass-surface); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 24px; display: flex; flex-direction: column; transform: translateY(40px) scale(0.97); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); border: 1px solid var(--border);}
+        .modal { background: rgba(255, 255, 255, 0.95); color: var(--text-main); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 24px; display: flex; flex-direction: column; transform: translateY(40px) scale(0.97); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); border: 1px solid var(--border);}
+        [data-theme="dark"] .modal { background: rgba(28, 28, 30, 0.95); }
         .modal-overlay.active .modal { transform: translateY(0) scale(1); }
         
-        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-color); }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .modal-header h2 { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--text-main); letter-spacing: -0.02em;}
         .btn-close { background: var(--input-bg); border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: var(--transition-spring); }
         .btn-close:hover { background: var(--border); color: var(--text-main); }
@@ -339,12 +335,12 @@
         
         .modal-status-card { background: var(--input-bg); padding: 1.25rem; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;}
         .modal-status-text { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
-        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em;}
-
-        .report-section { background: var(--input-bg); padding: 1rem; border-radius: 16px; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-main);}
+        .report-section { background: var(--input-bg); padding: 1rem; border-radius: 16px; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; color: var(--text-main);}
 
         /* --- iOS Custom Date Picker Modal UI --- */
-        .cal-modal { background: var(--glass-surface); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: blur(35px); width: 100%; max-width: 320px; border-radius: 24px; padding: 1.25rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border); transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .cal-modal { background: rgba(255, 255, 255, 0.95); color: var(--text-main); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: blur(35px); width: 100%; max-width: 320px; border-radius: 24px; padding: 1.25rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border); transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        [data-theme="dark"] .cal-modal { background: rgba(28, 28, 30, 0.95); }
         .modal-overlay.active .cal-modal { transform: translateY(0) scale(1); }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .cal-month-year { font-weight: 600; font-size: 1.1rem; color: var(--text-main); }
@@ -357,6 +353,32 @@
         .cal-day.active { background: var(--primary); color: white; font-weight: 600;}
         .cal-day.today:not(.active) { color: var(--primary); font-weight: 700; background: rgba(0, 122, 255, 0.1); }
         .cal-day.empty { visibility: hidden; }
+
+        /* --- Custom Dialog System (Replaces Native Alert/Confirm) --- */
+        .dialog-modal {
+            background: rgba(255, 255, 255, 0.95); color: var(--text-main);
+            backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px);
+            width: 85%; max-width: 320px; border-radius: 20px; text-align: center; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border);
+            transform: scale(1.05); opacity: 0; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        [data-theme="dark"] .dialog-modal { background: rgba(30, 30, 30, 0.95); }
+        .modal-overlay.active .dialog-modal { transform: scale(1); opacity: 1; }
+        
+        .dialog-content { padding: 1.5rem 1.5rem 1rem 1.5rem; }
+        .dialog-icon { font-size: 2.5rem; margin-bottom: 0.75rem; line-height: 1; }
+        .dialog-title { font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin: 0 0 0.4rem 0; letter-spacing: -0.02em; }
+        .dialog-message { font-size: 0.9rem; color: var(--text-main); margin: 0; line-height: 1.4; font-weight: 400;}
+        
+        .dialog-actions { display: flex; border-top: 1px solid var(--border); }
+        .dialog-btn { flex: 1; background: transparent; border: none; padding: 1rem; font-size: 1.05rem; cursor: pointer; transition: background 0.2s; }
+        .dialog-btn:active { background: var(--input-bg); }
+        
+        .dialog-btn-cancel { font-weight: 400; color: var(--primary); border-right: 1px solid var(--border); }
+        .dialog-btn-confirm { font-weight: 600; }
+        .dialog-btn-confirm.default { color: var(--primary); }
+        .dialog-btn-confirm.danger { color: var(--danger); }
+        .dialog-btn-confirm.success { color: var(--success); }
 
         @media (max-width: 768px) {
             header { flex-direction: column; text-align: center; gap: 1rem; }
@@ -403,9 +425,6 @@
         <button class="tab-btn" id="tab-roommates-btn" onclick="switchTab('roommates')">Roommates</button>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW: MY EXPENSES                          -->
-    <!-- ========================================== -->
     <div id="view-personal" class="view-section active">
         
         <div class="summary-top-row">
@@ -537,9 +556,6 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- VIEW: ROOMMATES                            -->
-    <!-- ========================================== -->
     <div id="view-roommates" class="view-section">
         
         <div class="summary-top-row">
@@ -593,12 +609,28 @@
 
 </div>
 
-<!-- UNIFIED DYNAMIC MODAL (For History, Reports & Settling) -->
+<div class="modal-overlay" id="dialog-modal-overlay" style="z-index: 9999999;">
+    <div class="dialog-modal">
+        <div class="dialog-content">
+            <div id="dialog-icon" class="dialog-icon">⚠️</div>
+            <h2 id="dialog-title" class="dialog-title">Title</h2>
+            <p id="dialog-message" class="dialog-message">Message</p>
+        </div>
+        <div class="dialog-actions">
+            <button id="dialog-btn-cancel" class="dialog-btn dialog-btn-cancel" onclick="closeDialog()">Cancel</button>
+            <button id="dialog-btn-confirm" class="dialog-btn dialog-btn-confirm default" onclick="handleDialogConfirm()">OK</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
         <div class="modal-header">
             <h2 id="modal-title">Details</h2>
-            <button class="btn-close" onclick="closeModal()">×</button>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button id="btn-delete-roommate" style="display:none; background:var(--input-bg); border:none; color:var(--danger); width: 30px; height: 30px; border-radius: 50%; font-size: 1rem; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-spring);" onclick="deleteActiveRoommate()" title="Delete Roommate">🗑️</button>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
         </div>
         <div class="modal-body">
             
@@ -633,7 +665,6 @@
     </div>
 </div>
 
-<!-- BUDGET MODAL -->
 <div class="modal-overlay" id="budget-modal-overlay">
     <div class="modal" style="max-width: 320px;">
         <div class="modal-header">
@@ -650,7 +681,6 @@
     </div>
 </div>
 
-<!-- QUICK ADD EDITOR MODAL -->
 <div class="modal-overlay" id="quick-add-modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header">
@@ -696,7 +726,6 @@
     </div>
 </div>
 
-<!-- CUSTOM DATE PICKER MODAL -->
 <div class="modal-overlay" id="calendar-modal-overlay" style="z-index: 1100;">
     <div class="cal-modal">
         <div class="cal-header">
@@ -714,7 +743,6 @@
     </div>
 </div>
 
-<!-- WELCOME / ONBOARDING MODAL -->
 <div class="modal-overlay" id="welcome-modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header" style="justify-content: center;">
@@ -745,7 +773,7 @@
             <div style="background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); padding: 1rem; border-radius: 12px; font-size: 0.95rem; color: var(--danger); margin-bottom: 1.5rem; text-align: left; font-weight: 600; display: flex; gap: 0.75rem; align-items: flex-start; box-shadow: 0 4px 12px rgba(255, 59, 48, 0.1);">
                 <span style="font-size: 1.2rem; line-height: 1;">🚨</span>
                 <div>
-                    If this is not the first time you're seeing this, it means your data has been reset.
+                    * If this is not the first time you're seeing this, it means your data has been reset.
                 </div>
             </div>
             
@@ -755,22 +783,53 @@
 </div>
 
 <script>
+    // --- Custom Universal Dialog System ---
+    let dialogConfirmCallback = null;
+
+    function showDialog({ title, message, icon = '⚠️', confirmText = 'OK', cancelText = 'Cancel', type = 'default', isAlert = false, onConfirm }) {
+        document.getElementById('dialog-icon').textContent = icon;
+        document.getElementById('dialog-title').innerHTML = title;
+        document.getElementById('dialog-message').innerHTML = message;
+        
+        const btnConfirm = document.getElementById('dialog-btn-confirm');
+        const btnCancel = document.getElementById('dialog-btn-cancel');
+        
+        btnConfirm.textContent = confirmText;
+        btnConfirm.className = 'dialog-btn dialog-btn-confirm ' + type;
+        
+        if (isAlert) {
+            btnCancel.style.display = 'none';
+            btnConfirm.style.borderLeft = 'none';
+        } else {
+            btnCancel.style.display = 'block';
+            btnCancel.textContent = cancelText;
+        }
+
+        dialogConfirmCallback = onConfirm;
+        document.getElementById('dialog-modal-overlay').classList.add('active');
+    }
+
+    function closeDialog() {
+        document.getElementById('dialog-modal-overlay').classList.remove('active');
+        dialogConfirmCallback = null;
+    }
+
+    function handleDialogConfirm() {
+        if (dialogConfirmCallback) dialogConfirmCallback();
+        closeDialog();
+    }
+
+
     // --- PORTAL Custom Select Logic ---
     function closeAllSelects() {
         document.querySelectorAll('.custom-select-options').forEach(opt => opt.classList.remove('open'));
     }
     
-    // Close selects on outside click
     document.addEventListener('click', closeAllSelects);
-    
-    // Close on scroll, EXCEPT when scrolling inside the dropdown itself
     window.addEventListener('scroll', function(e) {
-        if (e.target && e.target.classList && e.target.classList.contains('custom-select-options')) {
-            return; 
-        }
+        if (e.target && e.target.classList && e.target.classList.contains('custom-select-options')) return; 
         closeAllSelects();
     }, true); 
-    
     window.addEventListener('resize', closeAllSelects);
 
     function setupCustomSelect(selectId) {
@@ -792,7 +851,6 @@
             trigger.innerHTML = `<span></span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
             container.appendChild(trigger);
 
-            // Create Portaled Options Div in Body
             optionsDiv = document.createElement('div');
             optionsDiv.id = optionsDivId;
             optionsDiv.className = 'custom-select-options';
@@ -807,26 +865,18 @@
                     const rect = trigger.getBoundingClientRect();
                     optionsDiv.style.width = rect.width + 'px';
                     optionsDiv.style.left = rect.left + 'px';
-                    
-                    // ALWAYS DROP DOWN
                     optionsDiv.style.top = (rect.bottom + 5) + 'px';
                     optionsDiv.style.bottom = 'auto';
                     optionsDiv.style.transformOrigin = 'top center';
-
                     optionsDiv.classList.add('open');
                 }
             });
         }
 
         const triggerSpan = container.querySelector('.custom-select-trigger span');
-        
-        if(select.options.length > 0) {
-            triggerSpan.textContent = select.options[select.selectedIndex]?.text || select.options[0].text;
-        } else {
-            triggerSpan.textContent = 'Select...';
-        }
+        if(select.options.length > 0) triggerSpan.textContent = select.options[select.selectedIndex]?.text || select.options[0].text;
+        else triggerSpan.textContent = 'Select...';
 
-        // Re-populate options dynamically
         optionsDiv = document.getElementById(optionsDivId);
         optionsDiv.innerHTML = '';
         Array.from(select.options).forEach(option => {
@@ -849,7 +899,6 @@
         ['p-category', 'qa-category', 'filter-cat', 'roommate-select', 'transaction-type'].forEach(id => setupCustomSelect(id));
     }
 
-
     // --- Global Controls ---
     const themeToggle = document.getElementById('theme-toggle');
     if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
@@ -867,14 +916,9 @@
     let currentTab = 'personal';
     function switchTab(tabId) {
         currentTab = tabId;
-        
-        // Handle iOS segmented control slider
         const slider = document.getElementById('tab-slider');
-        if (tabId === 'roommates') {
-            slider.style.transform = 'translateX(100%)';
-        } else {
-            slider.style.transform = 'translateX(0)';
-        }
+        if (tabId === 'roommates') slider.style.transform = 'translateX(100%)';
+        else slider.style.transform = 'translateX(0)';
 
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -943,8 +987,8 @@
     }
 
     // --- Data Storage ---
-    const STORE_P = 'ledger_p_ios_v13';
-    const STORE_R = 'ledger_r_ios_v13';
+    const STORE_P = 'ledger_p_ios_vdialog';
+    const STORE_R = 'ledger_r_ios_vdialog';
 
     let stateP = JSON.parse(localStorage.getItem(STORE_P));
     if (!stateP) {
@@ -986,10 +1030,16 @@
         reader.onload = evt => {
             try {
                 const parsed = JSON.parse(evt.target.result);
-                if (currentTab === 'personal' && parsed.expenses) { stateP = parsed; saveP(); alert('Personal Data Restored!'); }
-                else if (currentTab === 'roommates' && parsed.transactions) { stateR = parsed; saveR(); alert('Roommate Data Restored!'); }
-                else throw new Error();
-            } catch { alert("Error: Invalid backup file."); }
+                if (currentTab === 'personal' && parsed.expenses) { 
+                    stateP = parsed; saveP(); 
+                    showDialog({ title: 'Success', message: 'Personal Data Restored successfully!', icon: '✅', isAlert: true, type: 'success' });
+                } else if (currentTab === 'roommates' && parsed.transactions) { 
+                    stateR = parsed; saveR(); 
+                    showDialog({ title: 'Success', message: 'Roommate Data Restored successfully!', icon: '✅', isAlert: true, type: 'success' });
+                } else throw new Error();
+            } catch { 
+                showDialog({ title: 'Error', message: 'Invalid backup file format.', icon: '❌', isAlert: true, type: 'danger' });
+            }
             e.target.value = '';
         };
         reader.readAsText(file);
@@ -1023,7 +1073,6 @@
         }, 300);
     }
 
-    // --- Budget Logic ---
     function openBudgetModal() { document.getElementById('budget-input-val').value = stateP.budget; document.getElementById('budget-modal-overlay').classList.add('active'); }
     function closeBudgetModal() { document.getElementById('budget-modal-overlay').classList.remove('active'); }
     function saveBudgetModal() {
@@ -1031,7 +1080,6 @@
         if(!isNaN(amt) && amt >= 0) { stateP.budget = amt; saveP(); closeBudgetModal(); }
     }
 
-    // --- Quick Adds Logic ---
     function renderQuickAdds() {
         const container = document.getElementById('quick-add-container');
         container.innerHTML = '';
@@ -1091,9 +1139,7 @@
         document.getElementById('qa-emoji').value = '';
         document.getElementById('qa-label').value = '';
         document.getElementById('qa-amount').value = '';
-        
         document.getElementById('qa-category').selectedIndex = 0;
-        
         document.getElementById('btn-qa-submit').textContent = "Save";
         document.getElementById('btn-qa-cancel').style.display = "none";
         syncAllSelects();
@@ -1106,7 +1152,9 @@
         const amount = parseFloat(document.getElementById('qa-amount').value);
         const category = document.getElementById('qa-category').value;
 
-        if (isNaN(amount) || amount <= 0) return alert('Enter a valid amount');
+        if (isNaN(amount) || amount <= 0) {
+            return showDialog({title:'Invalid Input', message:'Please enter a valid amount.', icon:'❌', isAlert:true, type:'danger'});
+        }
 
         if (id) {
             const idx = stateP.quickAdds.findIndex(q => q.id === id);
@@ -1185,7 +1233,17 @@
     });
 
     function deleteP(id) {
-        if(confirm('Delete expense?')) { stateP.expenses = stateP.expenses.filter(e => e.id !== id); saveP(); }
+        showDialog({
+            title: "Delete Expense",
+            message: "Are you sure you want to delete this log?",
+            icon: "🗑️",
+            confirmText: "Delete",
+            type: "danger",
+            onConfirm: () => {
+                stateP.expenses = stateP.expenses.filter(e => e.id !== id);
+                saveP();
+            }
+        });
     }
 
     function animateValue(obj, start, end, duration) {
@@ -1374,13 +1432,69 @@
     // ROOMMATES
     // ==========================================
     function getBalances() {
-        const bals = { 1: 0, 2: 0, 3: 0 };
-        stateR.transactions.forEach(t => { bals[t.roommateId] += t.type==='add' ? t.amount : -t.amount; });
+        const bals = {};
+        stateR.roommates.forEach(r => bals[r.id] = 0);
+        stateR.transactions.forEach(t => { 
+            if(bals[t.roommateId] !== undefined) {
+                bals[t.roommateId] += t.type==='add' ? t.amount : -t.amount; 
+            }
+        });
         return bals;
     }
 
     function renameR(id, val) { const r = stateR.roommates.find(x => x.id === id); if(r && val.trim()){ r.name = val.trim(); saveR(); syncAllSelects(); } }
-    function deleteR(id) { if(confirm('Delete this?')) { stateR.transactions = stateR.transactions.filter(t => t.id !== id); saveR(); } }
+    
+    function addRoommate() {
+        const newId = Date.now();
+        stateR.roommates.push({ id: newId, name: 'New Roommate' });
+        saveR();
+    }
+
+    function deleteActiveRoommate() {
+        if(activeModal.type !== 'roommate') return;
+        const rm = stateR.roommates.find(x => x.id === activeModal.id);
+        if(!rm) return;
+        
+        const bal = getBalances()[activeModal.id];
+        let msg = `Are you sure you want to delete <b>${rm.name}</b> and ALL their transaction history?`;
+        let title = "Delete Roommate";
+        let icon = "🗑️";
+        
+        if(bal !== 0) {
+            msg = `<b>${rm.name}</b> has an unsettled balance of <b>${formatMoney(bal)}</b>!<br><br>Are you sure you want to delete them and all history?`;
+            title = "Unsettled Balance!";
+            icon = "⚠️";
+        }
+
+        showDialog({
+            title: title,
+            message: msg,
+            icon: icon,
+            confirmText: "Delete",
+            type: "danger",
+            onConfirm: () => {
+                stateR.transactions = stateR.transactions.filter(t => t.roommateId !== activeModal.id);
+                stateR.roommates = stateR.roommates.filter(r => r.id !== activeModal.id);
+                saveR();
+                closeModal();
+            }
+        });
+    }
+
+    function deleteR(id) {
+        showDialog({
+            title: "Delete Transaction",
+            message: "Remove this record from the ledger?",
+            icon: "🗑️",
+            confirmText: "Delete",
+            type: "danger",
+            onConfirm: () => {
+                stateR.transactions = stateR.transactions.filter(t => t.id !== id);
+                saveR();
+                if(activeModal.type === 'roommate') openRoommateModal(activeModal.id);
+            }
+        });
+    }
 
     function renderRoommates() {
         const bals = getBalances();
@@ -1394,11 +1508,18 @@
             const cls = b===0 ? 'settled' : (isO ? 'owes-me' : 'paid-up');
             const txt = b===0 ? 'Settled up' : (isO ? 'Owes you' : 'You owe them');
 
-            const card = document.createElement('div'); card.className = 'card';
+            const card = document.createElement('div'); card.className = 'card glass-pane';
             card.innerHTML = `<input type="text" class="roommate-name" value="${r.name}" data-id="${r.id}"><div class="balance-label">${txt}</div><div class="balance-amount ${cls}">${formatMoney(b)}</div>`;
             card.addEventListener('click', e => { if(e.target.tagName !== 'INPUT') openRoommateModal(r.id); });
             dash.appendChild(card);
         });
+
+        // Add Roommate Button Card
+        const addCard = document.createElement('div');
+        addCard.className = 'card add-roommate-card';
+        addCard.innerHTML = `<div style="font-size: 2rem; color: var(--primary);">+</div><div style="margin-top: 0.5rem; font-weight: 600; color: var(--primary);">Add Roommate</div>`;
+        addCard.addEventListener('click', () => addRoommate());
+        dash.appendChild(addCard);
 
         document.getElementById('total-owed').textContent = formatMoney(owed);
         document.getElementById('total-owe').textContent = formatMoney(owe);
@@ -1464,10 +1585,12 @@
     document.getElementById('quick-add-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('quick-add-modal-overlay')) closeQuickAddModal(); });
     document.getElementById('budget-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('budget-modal-overlay')) closeBudgetModal(); });
     document.getElementById('calendar-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('calendar-modal-overlay')) closeCalendar(); });
+    document.getElementById('dialog-modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('dialog-modal-overlay')) closeDialog(); });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            if (document.getElementById('calendar-modal-overlay').classList.contains('active')) closeCalendar();
+            if (document.getElementById('dialog-modal-overlay').classList.contains('active')) closeDialog();
+            else if (document.getElementById('calendar-modal-overlay').classList.contains('active')) closeCalendar();
             else if (document.getElementById('quick-add-modal-overlay').classList.contains('active')) closeQuickAddModal();
             else if (document.getElementById('budget-modal-overlay').classList.contains('active')) closeBudgetModal();
             else if (document.getElementById('modal-overlay').classList.contains('active')) closeModal();
@@ -1479,6 +1602,7 @@
         activeModal = { type: 'day', id: dateStr };
         document.getElementById('modal-report-section').style.display = 'none';
         document.getElementById('btn-settle').style.display = 'none';
+        document.getElementById('btn-delete-roommate').style.display = 'none';
         document.getElementById('modal-title').textContent = `Expenses on ${formatDateObj(dateStr)}`;
         document.getElementById('modal-status-label').textContent = 'Daily Total:';
         
@@ -1497,6 +1621,7 @@
         activeModal = { type: 'personal-report', id: null };
         document.getElementById('modal-report-section').style.display = 'flex';
         document.getElementById('modal-status-area').style.display = 'none';
+        document.getElementById('btn-delete-roommate').style.display = 'none';
         document.getElementById('modal-title').textContent = `Export Report`;
         
         const today = new Date();
@@ -1513,6 +1638,7 @@
         
         document.getElementById('modal-report-section').style.display = 'flex';
         document.getElementById('modal-status-area').style.display = 'flex';
+        document.getElementById('btn-delete-roommate').style.display = 'flex';
         const today = new Date();
         setDateInput('report-start', toISOLocal(new Date(today.getFullYear(), today.getMonth(), 1)));
         setDateInput('report-end', toISOLocal(today));
@@ -1531,22 +1657,34 @@
         const trans = stateR.transactions.filter(t => t.roommateId === roomId).sort((a, b) => new Date(b.date) - new Date(a.date));
 
         if(trans.length===0) ml.innerHTML = '<li class="empty-state" style="padding:1.5rem; text-align:center; color:var(--text-muted);">No history.</li>';
-        else trans.forEach(t => { const isA = t.type==='add'; ml.innerHTML += `<li class="history-item"><div class="history-details"><span class="history-title">${t.note}</span><span class="history-meta">${formatDateObj(t.date)}</span></div><div class="history-right"><span class="badge ${isA?'debt':'credit'}">${isA?'Owes You':'You Owe'}</span><span class="history-amount ${isA?'amount-pos':'amount-neg'}">${isA?'+':'-'}${formatMoney(t.amount)}</span><button class="btn-action delete" onclick="deleteTransaction('${t.id}')">×</button></div></li>`; });
+        else trans.forEach(t => { const isA = t.type==='add'; ml.innerHTML += `<li class="history-item"><div class="history-details"><span class="history-title">${t.note}</span><span class="history-meta">${formatDateObj(t.date)}</span></div><div class="history-right"><span class="badge ${isA?'debt':'credit'}">${isA?'Owes You':'You Owe'}</span><span class="history-amount ${isA?'amount-pos':'amount-neg'}">${isA?'+':'-'}${formatMoney(t.amount)}</span><button class="btn-action delete" onclick="deleteR('${t.id}')">×</button></div></li>`; });
         document.getElementById('modal-overlay').classList.add('active');
     }
 
     function settleUpActiveRoommate() {
         if(activeModal.type !== 'roommate') return;
         const b = getBalances()[activeModal.id];
-        if(b===0 || !confirm('Mark fully settled?')) return;
-        stateR.transactions.push({ id: Date.now().toString(), roommateId: activeModal.id, type: b>0?'remove':'add', amount: Math.abs(b), note: 'Settled Up', date: new Date().toISOString() });
-        saveR();
+        if(b===0) return;
+        
+        showDialog({
+            title: "Settle Up",
+            message: "Are you sure you want to mark all debts as fully settled?",
+            icon: "✅",
+            confirmText: "Settle",
+            type: "success",
+            onConfirm: () => {
+                stateR.transactions.push({ id: Date.now().toString(), roommateId: activeModal.id, type: b>0?'remove':'add', amount: Math.abs(b), note: 'Settled Up', date: new Date().toISOString() });
+                saveR();
+            }
+        });
     }
 
     function generatePrintReport() {
         const s = document.getElementById('report-start').value;
         const e = document.getElementById('report-end').value;
-        if(!s || !e || s > e) return alert("Invalid date range.");
+        if(!s || !e || s > e) {
+            return showDialog({title:'Error', message:'Invalid date range.', icon:'❌', isAlert:true, type:'danger'});
+        }
 
         let html = `<html><head><title>Report</title><style>body{font-family:-apple-system,sans-serif;color:#000;padding:2rem;max-width:800px;margin:0 auto;}.header{text-align:center;border-bottom:2px solid #e2e8f0;padding-bottom:1rem;margin-bottom:2rem;}h1{margin:0;color:#007AFF;}.summary{background:#f8fafc;padding:1.5rem;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:2rem;text-align:center;}.amount{font-size:2rem;font-weight:800;margin:0;}table{width:100%;border-collapse:collapse;margin-top:1rem;}th,td{padding:0.75rem;text-align:left;border-bottom:1px solid #e2e8f0;}th{background:#f8fafc;color:#8E8E93;text-transform:uppercase;font-size:0.85rem;}</style></head><body>`;
         
@@ -1583,7 +1721,7 @@
 
     // --- Welcome Modal Logic ---
     function checkWelcomeModal() {
-        if (!localStorage.getItem('ledger_welcome_seen_v1')) {
+        if (!localStorage.getItem('ledger_welcome_seen_v2')) {
             setTimeout(() => {
                 document.getElementById('welcome-modal-overlay').classList.add('active');
             }, 500); 
@@ -1592,7 +1730,7 @@
 
     function closeWelcomeModal() {
         document.getElementById('welcome-modal-overlay').classList.remove('active');
-        localStorage.setItem('ledger_welcome_seen_v1', 'true');
+        localStorage.setItem('ledger_welcome_seen_v2', 'true');
     }
 
     syncAllSelects();
