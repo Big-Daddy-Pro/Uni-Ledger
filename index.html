@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ledger Pro</title>
+    <!-- Simple SVG Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <style>
         :root {
@@ -131,11 +132,12 @@
         label { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--text-muted); padding-left: 0.25rem;}
         
         /* iOS Inputs */
-        input, select { padding: 0.85rem 1rem; border: none; border-radius: 12px; font-size: 1rem; background: var(--input-bg); color: var(--text-main); font-family: inherit; outline: none; transition: var(--transition-smooth); width: 100%; box-sizing: border-box; -webkit-appearance: none;}
-        input:focus, select:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); background: var(--input-bg); }
+        input { padding: 0.85rem 1rem; border: none; border-radius: 12px; font-size: 1rem; background: var(--input-bg); color: var(--text-main); font-family: inherit; outline: none; transition: var(--transition-smooth); width: 100%; box-sizing: border-box; -webkit-appearance: none;}
+        input:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); background: var(--input-bg); }
         
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
+
         input:read-only { opacity: 1; -webkit-text-fill-color: var(--text-main); color: var(--text-main); }
 
         /* --- Custom Glass Dropdown Menus --- */
@@ -151,6 +153,7 @@
         .custom-select-trigger:focus { box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3); }
         .custom-select-trigger:active { transform: scale(0.98); opacity: 0.8; }
         
+        /* FIXED POSITION PORTAL - Breaks out of all Z-Index traps */
         .custom-select-options {
             position: fixed; 
             background: var(--glass-surface); backdrop-filter: saturate(180%) blur(30px); -webkit-backdrop-filter: saturate(180%) blur(30px);
@@ -191,6 +194,7 @@
         .budget-bar-fill { height: 100%; background: var(--success); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s; width: 0%; border-radius: 99px;}
         .budget-meta { display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted); font-weight: 500;}
 
+        /* --- Edit Buttons Fix --- */
         .btn-edit-shortcuts { background: transparent; color: var(--primary); border: none; padding: 0.3rem 0.5rem; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: var(--transition-smooth); letter-spacing: -0.01em; -webkit-tap-highlight-color: transparent; }
         .btn-edit-shortcuts:hover, .btn-edit-shortcuts:active { opacity: 0.5; transform: scale(0.95); }
 
@@ -247,10 +251,16 @@
         .chart-container { height: 220px; display: flex; align-items: flex-end; justify-content: space-around; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem;}
         .chart-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; }
         
-        .bar-track { width: 100%; max-width: 36px; height: 100%; background: var(--input-bg); border-radius: 99px; display: flex; flex-direction: column; justify-content: flex-end; padding: 3px; box-sizing: border-box; transition: var(--transition-spring); }
+        .bar-track {
+            width: 100%; max-width: 36px; height: 100%;
+            background: var(--input-bg); border-radius: 99px;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 3px; box-sizing: border-box;
+            transition: var(--transition-spring);
+        }
         .chart-col:hover .bar-track { background: var(--border); transform: scaleY(1.02); transform-origin: bottom; }
 
-        .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; border-radius: 99px; overflow: hidden; position: relative; }
+        .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; border-radius: 99px; overflow: hidden; position: relative; }
         .bar-segment { width: 100%; position: relative; transition: opacity 0.2s; }
         .bar-segment:hover { opacity: 0.85; }
         .bar-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 600; }
@@ -307,6 +317,7 @@
         .badge { padding: 0.2rem 0.5rem; border-radius: 5px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
         .badge.debt { background: rgba(52, 199, 89, 0.15); color: var(--success); }
         .badge.credit { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+        
         .badge.cat-food-main { background: rgba(90, 200, 250, 0.15); color: var(--cat-food-main); }
         .badge.cat-food-other { background: rgba(175, 82, 222, 0.15); color: var(--cat-food-other); }
         .badge.cat-travel-main { background: rgba(255, 149, 0, 0.15); color: var(--cat-travel-main); }
@@ -324,6 +335,7 @@
         
         .modal { background: rgba(255, 255, 255, 0.95); color: var(--text-main); backdrop-filter: saturate(180%) blur(35px); -webkit-backdrop-filter: saturate(180%) blur(35px); width: 90%; max-width: 500px; max-height: 85vh; border-radius: 24px; display: flex; flex-direction: column; transform: translateY(40px) scale(0.97); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); border: 1px solid var(--border);}
         [data-theme="dark"] .modal { background: rgba(28, 28, 30, 0.95); }
+        
         .modal-overlay.active .modal { transform: translateY(0) scale(1); }
         
         .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
@@ -335,7 +347,8 @@
         
         .modal-status-card { background: var(--input-bg); padding: 1.25rem; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;}
         .modal-status-text { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
-        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-main);}
+        .modal-status-amount { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em;}
+
         .report-section { background: var(--input-bg); padding: 1rem; border-radius: 16px; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; color: var(--text-main);}
 
         /* --- iOS Custom Date Picker Modal UI --- */
@@ -425,6 +438,9 @@
         <button class="tab-btn" id="tab-roommates-btn" onclick="switchTab('roommates')">Roommates</button>
     </div>
 
+    <!-- ========================================== -->
+    <!-- VIEW: MY EXPENSES                          -->
+    <!-- ========================================== -->
     <div id="view-personal" class="view-section active">
         
         <div class="summary-top-row">
@@ -455,7 +471,7 @@
             </div>
         </div>
 
-        <div class="section-box">
+        <div class="section-box" id="week-box">
             <div class="week-nav">
                 <button onclick="changeWeek(-1)">‹ Prev</button>
                 <h2 id="week-range-label" style="margin:0; font-size:1.1rem; font-weight:600;"></h2>
@@ -556,6 +572,9 @@
     </div>
 
 
+    <!-- ========================================== -->
+    <!-- VIEW: ROOMMATES                            -->
+    <!-- ========================================== -->
     <div id="view-roommates" class="view-section">
         
         <div class="summary-top-row">
@@ -609,6 +628,7 @@
 
 </div>
 
+<!-- UNIVERSAL CUSTOM DIALOG MODAL -->
 <div class="modal-overlay" id="dialog-modal-overlay" style="z-index: 9999999;">
     <div class="dialog-modal">
         <div class="dialog-content">
@@ -623,6 +643,7 @@
     </div>
 </div>
 
+<!-- UNIFIED DYNAMIC MODAL -->
 <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
         <div class="modal-header">
@@ -665,6 +686,7 @@
     </div>
 </div>
 
+<!-- BUDGET MODAL -->
 <div class="modal-overlay" id="budget-modal-overlay">
     <div class="modal" style="max-width: 320px;">
         <div class="modal-header">
@@ -681,6 +703,7 @@
     </div>
 </div>
 
+<!-- QUICK ADD EDITOR MODAL -->
 <div class="modal-overlay" id="quick-add-modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header">
@@ -726,6 +749,7 @@
     </div>
 </div>
 
+<!-- CUSTOM DATE PICKER MODAL -->
 <div class="modal-overlay" id="calendar-modal-overlay" style="z-index: 1100;">
     <div class="cal-modal">
         <div class="cal-header">
@@ -743,6 +767,7 @@
     </div>
 </div>
 
+<!-- WELCOME / ONBOARDING MODAL -->
 <div class="modal-overlay" id="welcome-modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header" style="justify-content: center;">
@@ -987,8 +1012,8 @@
     }
 
     // --- Data Storage ---
-    const STORE_P = 'ledger_p_ios_vdialog';
-    const STORE_R = 'ledger_r_ios_vdialog';
+    const STORE_P = 'ledger_p_ios_vswipe';
+    const STORE_R = 'ledger_r_ios_vswipe';
 
     let stateP = JSON.parse(localStorage.getItem(STORE_P));
     if (!stateP) {
@@ -1053,7 +1078,8 @@
     
     let currentDate = new Date(); currentDate.setHours(0,0,0,0);
     let currentWeekStart = new Date(currentDate);
-    currentWeekStart.setDate(currentWeekStart.getDate() - (currentWeekStart.getDay()||7) + 1);
+    // FIX: Set week start to Sunday
+    currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay());
 
     setDateInput('p-date', toISOLocal(new Date()));
 
@@ -1072,6 +1098,33 @@
             setTimeout(() => { wrapper.classList.remove(inClass); }, 300);
         }, 300);
     }
+
+    // --- Swipe Navigation for Calendar ---
+    let touchstartX = 0;
+    let touchendX = 0;
+    let touchstartY = 0;
+    let touchendY = 0;
+
+    const weekBox = document.getElementById('week-box');
+    
+    weekBox.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX;
+        touchstartY = e.changedTouches[0].screenY;
+    }, {passive: true});
+
+    weekBox.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        touchendY = e.changedTouches[0].screenY;
+        
+        const diffX = touchstartX - touchendX;
+        const diffY = touchstartY - touchendY;
+        
+        // If horizontal swipe is dominant and exceeds 70px threshold
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 70) {
+            if (diffX > 0) changeWeek(1); // Swipe left -> next week
+            else changeWeek(-1); // Swipe right -> prev week
+        }
+    }, {passive: true});
 
     function openBudgetModal() { document.getElementById('budget-input-val').value = stateP.budget; document.getElementById('budget-modal-overlay').classList.add('active'); }
     function closeBudgetModal() { document.getElementById('budget-modal-overlay').classList.remove('active'); }
@@ -1318,7 +1371,8 @@
         if(weeklyTotal > 0) {
             let maxDayVal = -1; let maxDayIdx = -1;
             dailyData.forEach((d, i) => { if(d.total > maxDayVal) { maxDayVal = d.total; maxDayIdx = i; } });
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            // FIX: Match Sunday start for Insights array
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             box.innerHTML += `<div class="insight-card" style="border-left-color:var(--warning);"><div class="insight-title">Costliest Day (This Week)</div><div class="insight-val">${days[maxDayIdx]}</div></div>`;
         }
     }
@@ -1339,7 +1393,8 @@
         stateP.expenses.forEach(ex => {
             if (ex.date >= startStr && ex.date <= endStr) {
                 weeklyTotal += ex.amount;
-                let idx = (new Date(ex.date).getDay() || 7) - 1; 
+                // FIX: Sunday is 0, array index naturally matches
+                let idx = new Date(ex.date).getDay(); 
                 dailyData[idx].total += ex.amount;
                 if(dailyData[idx][ex.category] !== undefined) dailyData[idx][ex.category] += ex.amount;
             }
@@ -1356,7 +1411,8 @@
 
         const wrapper = document.getElementById('days-wrapper');
         wrapper.innerHTML = '';
-        const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        // FIX: Start with Sunday
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         weekDays.forEach((dObj, i) => {
             const dStr = toISOLocal(dObj);
@@ -1508,7 +1564,7 @@
             const cls = b===0 ? 'settled' : (isO ? 'owes-me' : 'paid-up');
             const txt = b===0 ? 'Settled up' : (isO ? 'Owes you' : 'You owe them');
 
-            const card = document.createElement('div'); card.className = 'card glass-pane';
+            const card = document.createElement('div'); card.className = 'card';
             card.innerHTML = `<input type="text" class="roommate-name" value="${r.name}" data-id="${r.id}"><div class="balance-label">${txt}</div><div class="balance-amount ${cls}">${formatMoney(b)}</div>`;
             card.addEventListener('click', e => { if(e.target.tagName !== 'INPUT') openRoommateModal(r.id); });
             dash.appendChild(card);
