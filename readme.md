@@ -57,7 +57,7 @@ Unlike bloated cloud-based financial trackers that harvest user data, Ledger Pro
 
 ## 🏗️ System Architecture
 
-Markdown supports **Mermaid.js**, allowing us to render complex system diagrams directly from plain text! Here is how Ledger Pro handles state and rendering without external frameworks like React or Vue:
+Here is how Ledger Pro handles state:
 
 ```mermaid
 flowchart TD
