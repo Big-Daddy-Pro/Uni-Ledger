@@ -95,9 +95,9 @@ flowchart TD
 Ledger Pro uses LaTeX mathematical formatting to document its internal calculation engines.
 
 ### 1. Weekly Budget Utilization
-The budget progress bar dynamically shifts colors (Green $\rightarrow$ Orange $\rightarrow$ Red) based on your utilization percentage $U_{\%}$, bounded at $100\%$ for the visual CSS width:
+The budget progress bar dynamically shifts colors (Green $\rightarrow$ Orange $\rightarrow$ Red) based on your utilization percentage $U_{\\%}$, bounded at $100\\%$ for the visual CSS width:
 
-$$U_{\%} = \min\left( \left( \frac{\sum_{i=1}^{n} E_i}{B_{\text{limit}}} \right) \times 100, \ 100 \right)$$
+$$U_{\\%} = \min\left( \left( \frac{\sum_{i=1}^{n} E_i}{B_{\text{limit}}} \right) \times 100, \ 100 \right)$$
 
 Where:
 * $E_i$ represents each individual expense logged within the active Sunday–Saturday window ($0 \le \text{dayIndex} \le 6$).
